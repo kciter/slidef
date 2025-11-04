@@ -1,0 +1,229 @@
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-controls);
+  padding: var(--spacing-md);
+  background: linear-gradient(180deg, var(--overlay-bg) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+body:hover .header,
+.header:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.slide-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--overlay-bg);
+  transition: background var(--transition-fast);
+}
+
+.icon-button:hover {
+  background: var(--progress-bg);
+}
+
+.icon-button:active {
+  transform: scale(0.95);
+}
+
+/* Slide container */
+.slide-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  padding-bottom: calc(var(--spacing-lg) + 60px); /* Space for progress bar */
+}
+
+.slide-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Navigation buttons */
+.nav-button {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-controls);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--overlay-bg);
+  opacity: 0;
+  transition: opacity var(--transition-normal), background var(--transition-fast);
+  pointer-events: none;
+}
+
+body:hover .nav-button {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-button:hover {
+  background: var(--progress-bg);
+}
+
+.nav-button:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.nav-button-prev {
+  left: var(--spacing-md);
+}
+
+.nav-button-next {
+  right: var(--spacing-md);
+}
+
+.nav-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nav-button:disabled:hover {
+  background: var(--overlay-bg);
+}
+
+/* Progress bar */
+.progress-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-progress);
+  padding: var(--spacing-md);
+}
+
+.progress-bar {
+  position: relative;
+  height: 4px;
+  background: var(--progress-bg);
+  border-radius: 2px;
+  cursor: pointer;
+  margin-bottom: var(--spacing-xs);
+  transition: height var(--transition-fast);
+}
+
+.progress-bar:hover {
+  height: 6px;
+}
+
+.progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--progress-fill);
+  border-radius: 2px;
+  transition: width var(--transition-fast);
+}
+
+.progress-info {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.progress-container:hover .progress-info,
+.progress-info:focus-within {
+  opacity: 1;
+}
+
+/* Thumbnail preview */
+.thumbnail-preview {
+  position: absolute;
+  bottom: calc(100% + var(--spacing-sm));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--spacing-xs);
+  background: var(--thumbnail-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--thumbnail-shadow);
+  pointer-events: none;
+  z-index: var(--z-thumbnail);
+}
+
+.thumbnail-image {
+  max-width: 200px;
+  max-height: 150px;
+  display: block;
+  border-radius: 4px;
+}
+
+.thumbnail-number {
+  text-align: center;
+  margin-top: var(--spacing-xs);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Loading state */
+.slide-image[src=""] {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slide-title {
+    font-size: 1rem;
+  }
+
+  .nav-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .thumbnail-image {
+    max-width: 150px;
+    max-height: 112px;
+  }
+}
+
+/* Keyboard navigation hint */
+@media (prefers-reduced-motion: no-preference) {
+  .slide-image {
+    transition: opacity 0.2s ease;
+  }
+}

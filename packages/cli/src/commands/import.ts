@@ -1,0 +1,90 @@
+import * as path from 'path';
+import chalk from 'chalk';
+import ora from 'ora';
+import { convertPdfToImages } from '../utils/pdf.js';
+import { saveMetadata, fileExists, getBaseName, calculateFileHash, loadMetadata } from '../utils/file.js';
+import type { ConvertOptions, SlideMetadata } from '../types.js';
+
+export async function importCommand(
+  pdfFile: string,
+  options: ConvertOptions
+): Promise<void> {
+  const spinner = ora('Importing PDF slides...').start();
+
+  try {
+    // Check if PDF file exists
+    const pdfPath = path.resolve(pdfFile);
+    if (!(await fileExists(pdfPath))) {
+      spinner.fail(chalk.red(`PDF file not found: ${pdfFile}`));
+      process.exit(1);
+    }
+
+    // Calculate PDF hash
+    spinner.text = 'Calculating file hash...';
+    const pdfHash = await calculateFileHash(pdfPath);
+
+    // Determine slide name
+    const slideName = options.name || getBaseName(pdfFile);
+    const outputDir = path.resolve('slides', slideName);
+    const imagesDir = path.join(outputDir, 'images');
+
+    // Check if slide already exists with same hash
+    if (await fileExists(outputDir)) {
+      const existingMetadata = await loadMetadata(outputDir);
+      if (existingMetadata && existingMetadata.sha256 === pdfHash) {
+        spinner.info(chalk.yellow(`Slide deck "${slideName}" already exists with the same content`));
+        console.log(chalk.gray('Skipping import (file hash matches existing slide)'));
+        console.log(chalk.gray(`Hash: ${pdfHash.substring(0, 16)}...`));
+        return;
+      }
+    }
+
+    spinner.text = `Converting ${chalk.cyan(pdfFile)} to images...`;
+
+    // Parse scale option
+    const scale = options.scale ? parseFloat(options.scale as any) : 2;
+    if (isNaN(scale) || scale <= 0) {
+      spinner.fail(chalk.red('Scale must be a positive number'));
+      process.exit(1);
+    }
+
+    // Convert PDF to images
+    // Pass relative path to work around pdf-to-png-converter path handling
+    const relativeImagesDir = path.relative(process.cwd(), imagesDir);
+    const pageCount = await convertPdfToImages(pdfPath, relativeImagesDir, scale);
+
+    spinner.text = 'Saving metadata...';
+
+    // Create metadata
+    const metadata: SlideMetadata = {
+      name: slideName,
+      filename: path.basename(pdfFile),
+      pageCount,
+      createdAt: new Date().toISOString(),
+      sha256: pdfHash,
+    };
+
+    // Save metadata
+    await saveMetadata(outputDir, metadata);
+
+    spinner.succeed(
+      chalk.green(
+        `Successfully imported ${chalk.cyan(pageCount)} pages to ${chalk.cyan(
+          outputDir
+        )}`
+      )
+    );
+
+    console.log(chalk.gray('\nOutput structure:'));
+    console.log(chalk.gray(`  ${outputDir}/`));
+    console.log(chalk.gray(`  ├── images/`));
+    console.log(chalk.gray(`  │   ├── slide-001.png`));
+    console.log(chalk.gray(`  │   ├── slide-002.png`));
+    console.log(chalk.gray(`  │   └── ...`));
+    console.log(chalk.gray(`  └── metadata.json`));
+  } catch (error) {
+    spinner.fail(chalk.red('Import failed'));
+    console.error(chalk.red('\nError:'), error instanceof Error ? error.message : error);
+    process.exit(1);
+  }
+}

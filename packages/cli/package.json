@@ -1,0 +1,39 @@
+{
+  "name": "@slidef/cli",
+  "version": "0.0.1",
+  "description": "CLI tool for converting PDF slides to web-viewable format",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "slidef": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js && cp -r src/templates dist/templates",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "pdf",
+    "slides",
+    "converter",
+    "presentation",
+    "cli"
+  ],
+  "author": "kciter",
+  "license": "MIT",
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.81",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "ora": "^8.0.1",
+    "pdfjs-dist": "^4.0.379"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@slidef/viewer",
+  "version": "0.0.1",
+  "description": "Slidef viewer UI",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "slides",
+    "viewer",
+    "presentation"
+  ],
+  "author": "kciter",
+  "license": "MIT"
+}

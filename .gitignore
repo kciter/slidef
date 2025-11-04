@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+.claude
+CLAUDE.md
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Package manager
+pnpm-lock.yaml
+
+slides/
+test/

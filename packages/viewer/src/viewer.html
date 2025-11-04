@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slidef Viewer</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/viewer.css">
+</head>
+<body>
+  <!-- Header (hidden by default, shown on hover) -->
+  <header id="header" class="header">
+    <div class="header-content">
+      <h1 id="slide-title" class="slide-title">Loading...</h1>
+      <div class="header-actions">
+        <button id="theme-toggle" class="icon-button" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path class="sun-icon" d="M10 3a1 1 0 011 1v1a1 1 0 11-2 0V4a1 1 0 011-1zm5.66 1.34a1 1 0 010 1.41l-.71.71a1 1 0 01-1.41-1.41l.71-.71a1 1 0 011.41 0zM16 10a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm-1.05 4.95a1 1 0 011.41 0l.71.71a1 1 0 01-1.41 1.41l-.71-.71a1 1 0 010-1.41zM10 15a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-5.66-.34a1 1 0 011.41 1.41l-.71.71a1 1 0 01-1.41-1.41l.71-.71zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zm1.05-4.95a1 1 0 010 1.41l-.71.71a1 1 0 01-1.41-1.41l.71-.71a1 1 0 011.41 0zM10 7a3 3 0 100 6 3 3 0 000-6z"/>
+            <path class="moon-icon hidden" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+          </svg>
+        </button>
+        <button id="close-button" class="icon-button" aria-label="Close viewer">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Slide container -->
+  <main id="slide-container" class="slide-container">
+    <img id="slide-image" class="slide-image" alt="Slide" />
+
+    <!-- Navigation buttons (hidden by default, shown on hover) -->
+    <button id="prev-button" class="nav-button nav-button-prev" aria-label="Previous slide">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+        <path d="M25 10l-10 10 10 10" stroke="currentColor" stroke-width="2" fill="none"/>
+      </svg>
+    </button>
+    <button id="next-button" class="nav-button nav-button-next" aria-label="Next slide">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+        <path d="M15 10l10 10-10 10" stroke="currentColor" stroke-width="2" fill="none"/>
+      </svg>
+    </button>
+  </main>
+
+  <!-- Progress bar -->
+  <div id="progress-container" class="progress-container">
+    <div id="progress-bar" class="progress-bar">
+      <div id="progress-fill" class="progress-fill"></div>
+    </div>
+    <div id="progress-info" class="progress-info">
+      <span id="current-slide">1</span> / <span id="total-slides">1</span>
+    </div>
+
+    <!-- Thumbnail preview (shown on progress bar hover) -->
+    <div id="thumbnail-preview" class="thumbnail-preview hidden">
+      <img id="thumbnail-image" class="thumbnail-image" alt="Preview" />
+      <div id="thumbnail-number" class="thumbnail-number"></div>
+    </div>
+  </div>
+
+  <script src="js/theme.js"></script>
+  <script src="js/viewer.js"></script>
+</body>
+</html>
