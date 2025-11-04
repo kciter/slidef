@@ -49,9 +49,16 @@ class SlidefViewer {
       await this.loadMetadata();
       this.setupEventListeners();
       this.showSlide(this.currentSlide);
+
+      // Update URL if page query is missing
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has('page')) {
+        const url = new URL(window.location);
+        url.searchParams.set('page', this.currentSlide);
+        window.history.replaceState({}, '', url);
+      }
     } catch (error) {
       console.error('Failed to initialize viewer:', error);
-      this.slideTitle.textContent = 'Error loading slides';
     }
   }
 
@@ -348,10 +355,68 @@ class SlidefViewer {
     }
 
     this.scrollContainer.classList.remove('hidden');
+
+    // Add scroll event listener to update progress bar
+    this.scrollContainer.addEventListener('scroll', () => this.updateScrollProgress());
+
+    // Scroll to current slide position
+    this.scrollToCurrentSlide();
   }
 
   exitScrollMode() {
+    // Calculate which slide is currently visible before exiting
+    this.updateCurrentSlideFromScroll();
+
     this.scrollContainer.classList.add('hidden');
+
+    // Remove scroll event listener
+    this.scrollContainer.removeEventListener('scroll', () => this.updateScrollProgress());
+
+    // Show the current slide in slide mode
+    this.showSlide(this.currentSlide, true);
+  }
+
+  scrollToCurrentSlide() {
+    // Calculate scroll position for current slide
+    const slideElements = this.scrollContainer.querySelectorAll('.scroll-slide');
+    if (slideElements.length > 0 && this.currentSlide > 0) {
+      const targetSlide = slideElements[this.currentSlide - 1];
+      if (targetSlide) {
+        targetSlide.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
+    }
+  }
+
+  updateScrollProgress() {
+    const scrollTop = this.scrollContainer.scrollTop;
+    const scrollHeight = this.scrollContainer.scrollHeight - this.scrollContainer.clientHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+
+    this.progressFill.style.width = `${progress}%`;
+  }
+
+  updateCurrentSlideFromScroll() {
+    // Find which slide is currently most visible
+    const slideElements = this.scrollContainer.querySelectorAll('.scroll-slide');
+    const scrollTop = this.scrollContainer.scrollTop;
+    const containerHeight = this.scrollContainer.clientHeight;
+    const centerY = scrollTop + containerHeight / 2;
+
+    let closestSlide = 1;
+    let minDistance = Infinity;
+
+    slideElements.forEach((slide, index) => {
+      const slideTop = slide.offsetTop;
+      const slideCenter = slideTop + slide.offsetHeight / 2;
+      const distance = Math.abs(slideCenter - centerY);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestSlide = index + 1;
+      }
+    });
+
+    this.currentSlide = closestSlide;
   }
 
   openShareModal() {
