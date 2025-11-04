@@ -41,12 +41,15 @@ body.controls-visible .menu-container {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--overlay-bg);
-  transition: background var(--transition-fast);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px) saturate(180%) invert(0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.15);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .icon-button:hover {
-  background: var(--progress-bg);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.25);
 }
 
 .icon-button:active {
@@ -369,47 +372,49 @@ body.controls-visible .progress-container {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
   z-index: 100;
-  backdrop-filter: blur(4px);
 }
 
 .overview-modal-content {
-  background: var(--bg-primary);
-  border-radius: 12px;
-  width: 95%;
-  max-width: 1400px;
-  max-height: 90vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow-x: hidden;
+  padding: var(--spacing-md);
+  padding-top: calc(var(--spacing-md) + 60px);
 }
 
 .overview-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  background: var(--bg-primary);
-  z-index: 1;
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: 101;
+}
+
+.overview-modal-header .modal-close-button {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.overview-modal-header .modal-close-button:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
 .overview-modal-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
+  display: none;
 }
 
 .overview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  width: 100%;
 }
 
 .overview-slide {

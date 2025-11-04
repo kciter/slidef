@@ -15,6 +15,7 @@ class SlidefViewer {
     this.slideImages = [];
     this.metadata = null;
     this.hideControlsTimer = null;
+    this.wheelThrottleTimer = null;
 
     // DOM elements
     this.slideImage = document.getElementById('slide-image');
@@ -102,11 +103,11 @@ class SlidefViewer {
 
     // Overview modal close
     this.overviewModalClose.addEventListener('click', () => this.closeOverviewModal());
-    this.overviewModal.addEventListener('click', (e) => {
-      if (e.target === this.overviewModal) {
-        this.closeOverviewModal();
-      }
-    });
+
+    // Prevent wheel events from affecting overview modal scroll
+    this.overviewModal.addEventListener('wheel', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
 
     // Share modal close
     this.shareModalClose.addEventListener('click', () => this.closeShareModal());
@@ -122,6 +123,9 @@ class SlidefViewer {
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+
+    // Mouse wheel navigation (only in slide mode, not scroll mode)
+    document.addEventListener('wheel', (e) => this.handleWheel(e), { passive: false });
 
     // Progress bar click
     this.progressBar.addEventListener('click', (e) => this.handleProgressClick(e));
@@ -170,6 +174,20 @@ class SlidefViewer {
   }
 
   handleKeyPress(e) {
+    // Handle ESC key for closing modals
+    if (e.key === 'Escape') {
+      if (!this.overviewModal.classList.contains('hidden')) {
+        e.preventDefault();
+        this.closeOverviewModal();
+        return;
+      }
+      if (!this.shareModal.classList.contains('hidden')) {
+        e.preventDefault();
+        this.closeShareModal();
+        return;
+      }
+    }
+
     switch (e.key) {
       case 'ArrowLeft':
       case 'ArrowUp':
@@ -192,6 +210,35 @@ class SlidefViewer {
         e.preventDefault();
         this.goToSlide(this.totalSlides);
         break;
+    }
+  }
+
+  handleWheel(e) {
+    // Don't handle wheel in scroll mode or when modal is open
+    if (document.body.classList.contains('scroll-mode') ||
+        !this.overviewModal.classList.contains('hidden')) {
+      return;
+    }
+
+    // Prevent default scroll behavior
+    e.preventDefault();
+
+    // Throttle wheel events to avoid too rapid navigation
+    if (this.wheelThrottleTimer) {
+      return;
+    }
+
+    this.wheelThrottleTimer = setTimeout(() => {
+      this.wheelThrottleTimer = null;
+    }, 300);
+
+    // Navigate based on wheel direction
+    if (e.deltaY > 0) {
+      // Scroll down = next slide
+      this.nextSlide();
+    } else if (e.deltaY < 0) {
+      // Scroll up = previous slide
+      this.previousSlide();
     }
   }
 
@@ -382,16 +429,17 @@ class SlidefViewer {
     if (slideElements.length > 0 && this.currentSlide > 0) {
       const targetSlide = slideElements[this.currentSlide - 1];
       if (targetSlide) {
-        targetSlide.scrollIntoView({ behavior: 'auto', block: 'start' });
+        targetSlide.scrollIntoView({ behavior: 'auto', block: 'center' });
       }
     }
   }
 
   updateScrollProgress() {
-    const scrollTop = this.scrollContainer.scrollTop;
-    const scrollHeight = this.scrollContainer.scrollHeight - this.scrollContainer.clientHeight;
-    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    // Update current slide based on scroll position
+    this.updateCurrentSlideFromScroll();
 
+    // Update progress bar based on slide number, not scroll position
+    const progress = (this.currentSlide / this.totalSlides) * 100;
     this.progressFill.style.width = `${progress}%`;
   }
 
