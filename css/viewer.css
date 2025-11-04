@@ -68,14 +68,41 @@ body.controls-visible .menu-container {
   justify-content: center;
   padding: 0; /* No padding - fullscreen */
   background-color: #333333;
+  overflow: hidden;
+}
+
+.slides-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease-out;
 }
 
 .slide-image {
+  position: absolute;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
+  flex-shrink: 0;
+}
+
+.slide-prev {
+  left: -100%;
+}
+
+.slide-current {
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+.slide-next {
+  right: -100%;
+  left: auto;
 }
 
 /* Scroll container */
@@ -241,12 +268,6 @@ body.controls-visible .progress-container {
   }
 }
 
-/* Keyboard navigation hint */
-@media (prefers-reduced-motion: no-preference) {
-  .slide-image {
-    transition: opacity 0.2s ease;
-  }
-}
 
 /* Share Modal */
 .share-modal {
@@ -324,6 +345,41 @@ body.controls-visible .progress-container {
   color: var(--text-secondary);
   font-size: 0.875rem;
   margin-bottom: var(--spacing-sm);
+}
+
+.share-mode-options {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.share-mode-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  flex: 1;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.share-mode-option:hover {
+  background: var(--bg-secondary);
+}
+
+.share-mode-option input[type="radio"] {
+  cursor: pointer;
+}
+
+.share-mode-option input[type="radio"]:checked + span {
+  font-weight: 600;
+}
+
+.share-mode-option:has(input[type="radio"]:checked) {
+  border-color: var(--progress-fill);
+  background: rgba(160, 32, 240, 0.05);
 }
 
 .share-input-group {
@@ -461,5 +517,10 @@ body.controls-visible .progress-container {
   .overview-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: var(--spacing-sm);
+  }
+
+  /* Hide fullscreen button on mobile */
+  #fullscreen-toggle {
+    display: none;
   }
 }

@@ -45,7 +45,11 @@
 
   <!-- Slide container -->
   <main id="slide-container" class="slide-container">
-    <img id="slide-image" class="slide-image" alt="Slide" />
+    <div id="slides-wrapper" class="slides-wrapper">
+      <img id="slide-prev" class="slide-image slide-prev" alt="Previous slide" />
+      <img id="slide-current" class="slide-image slide-current" alt="Current slide" />
+      <img id="slide-next" class="slide-image slide-next" alt="Next slide" />
+    </div>
 
     <!-- Clickable navigation areas -->
     <div id="nav-area-prev" class="nav-area nav-area-prev" aria-label="Previous slide"></div>
@@ -99,6 +103,20 @@
         </button>
       </div>
       <div class="share-modal-body">
+        <div class="share-option">
+          <h3>View Mode</h3>
+          <p>Choose how viewers will see your presentation</p>
+          <div class="share-mode-options">
+            <label class="share-mode-option">
+              <input type="radio" name="share-mode" value="slide" checked />
+              <span>Slide Mode</span>
+            </label>
+            <label class="share-mode-option">
+              <input type="radio" name="share-mode" value="scroll" />
+              <span>Scroll Mode</span>
+            </label>
+          </div>
+        </div>
         <div class="share-option">
           <h3>Direct Link</h3>
           <p>Share this link to let others view your presentation</p>

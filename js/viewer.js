@@ -17,14 +17,11 @@ class SlidefViewer {
     this.hideControlsTimer = null;
     this.wheelThrottleTimer = null;
 
-    // Touch state
-    this.touchStartX = 0;
-    this.touchStartY = 0;
-    this.touchEndX = 0;
-    this.touchEndY = 0;
-
     // DOM elements
-    this.slideImage = document.getElementById('slide-image');
+    this.slidesWrapper = document.getElementById('slides-wrapper');
+    this.slidePrev = document.getElementById('slide-prev');
+    this.slideCurrent = document.getElementById('slide-current');
+    this.slideNext = document.getElementById('slide-next');
     this.navAreaPrev = document.getElementById('nav-area-prev');
     this.navAreaNext = document.getElementById('nav-area-next');
     this.closeButton = document.getElementById('close-button');
@@ -63,6 +60,18 @@ class SlidefViewer {
         const url = new URL(window.location);
         url.searchParams.set('page', this.currentSlide);
         window.history.replaceState({}, '', url);
+      }
+
+      // Enable scroll mode by default on mobile or if mode=scroll in URL
+      const mode = params.get('mode');
+      if (window.innerWidth <= 768 || mode === 'scroll') {
+        this.toggleScrollMode();
+      }
+
+      // Show close button only if coming from list page
+      const isFromList = params.get('from') === 'list';
+      if (!isFromList) {
+        this.closeButton.parentElement.style.display = 'none';
       }
     } catch (error) {
       console.error('Failed to initialize viewer:', error);
@@ -115,6 +124,11 @@ class SlidefViewer {
       e.stopPropagation();
     }, { passive: true });
 
+    // Prevent wheel events from affecting share modal scroll
+    this.shareModal.addEventListener('wheel', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+
     // Share modal close
     this.shareModalClose.addEventListener('click', () => this.closeShareModal());
     this.shareModal.addEventListener('click', (e) => {
@@ -126,6 +140,11 @@ class SlidefViewer {
     // Copy buttons
     this.copyLinkButton.addEventListener('click', () => this.copyToClipboard(this.shareLinkInput.value, 'Link copied!'));
     this.copyEmbedButton.addEventListener('click', () => this.copyToClipboard(this.shareEmbedInput.value, 'Embed code copied!'));
+
+    // Share mode radio buttons - update URLs when changed
+    document.querySelectorAll('input[name="share-mode"]').forEach(radio => {
+      radio.addEventListener('change', () => this.updateShareURLs());
+    });
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => this.handleKeyPress(e));
@@ -140,8 +159,10 @@ class SlidefViewer {
     this.progressBar.addEventListener('mousemove', (e) => this.showThumbnail(e));
     this.progressBar.addEventListener('mouseleave', () => this.hideThumbnail());
 
-    // Prevent context menu on slide image
-    this.slideImage.addEventListener('contextmenu', (e) => e.preventDefault());
+    // Prevent context menu on slide images
+    this.slidePrev.addEventListener('contextmenu', (e) => e.preventDefault());
+    this.slideCurrent.addEventListener('contextmenu', (e) => e.preventDefault());
+    this.slideNext.addEventListener('contextmenu', (e) => e.preventDefault());
 
     // Update URL on slide change
     window.addEventListener('popstate', () => {
@@ -160,10 +181,6 @@ class SlidefViewer {
 
     // Show/hide controls on mouse move
     document.addEventListener('mousemove', () => this.showControls());
-
-    // Touch events for swipe navigation (only in slide mode)
-    document.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
-    document.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: true });
 
     // Initial show
     this.showControls();
@@ -305,13 +322,27 @@ class SlidefViewer {
   showSlide(slideNumber, updateHistory = true) {
     this.currentSlide = Math.max(1, Math.min(slideNumber, this.totalSlides));
 
-    // Update image
-    this.slideImage.src = this.slideImages[this.currentSlide - 1];
+    // Reset wrapper transform
+    this.slidesWrapper.style.transform = 'translateX(0)';
+    this.slidesWrapper.style.transition = 'none';
 
-    // Preload next slide image
+    // Update current slide
+    this.slideCurrent.src = this.slideImages[this.currentSlide - 1];
+
+    // Update previous slide
+    if (this.currentSlide > 1) {
+      this.slidePrev.src = this.slideImages[this.currentSlide - 2];
+      this.slidePrev.style.display = 'block';
+    } else {
+      this.slidePrev.style.display = 'none';
+    }
+
+    // Update next slide
     if (this.currentSlide < this.totalSlides) {
-      const nextImage = new Image();
-      nextImage.src = this.slideImages[this.currentSlide];
+      this.slideNext.src = this.slideImages[this.currentSlide];
+      this.slideNext.style.display = 'block';
+    } else {
+      this.slideNext.style.display = 'none';
     }
 
     // Update progress
@@ -335,7 +366,7 @@ class SlidefViewer {
     if (updateHistory) {
       const url = new URL(window.location);
       url.searchParams.set('page', this.currentSlide);
-      window.history.pushState({}, '', url);
+      window.history.replaceState({}, '', url);
     }
 
     // Update document title
@@ -478,16 +509,34 @@ class SlidefViewer {
   }
 
   openShareModal() {
-    // Generate share link (current URL)
-    const shareLink = window.location.href;
+    // Update share URLs when modal opens
+    this.updateShareURLs();
+
+    // Show modal
+    this.shareModal.classList.remove('hidden');
+  }
+
+  updateShareURLs() {
+    // Get current URL and remove 'from' parameter
+    const url = new URL(window.location.href);
+    url.searchParams.delete('from');
+
+    // Get selected mode
+    const selectedMode = document.querySelector('input[name="share-mode"]:checked').value;
+
+    // Add mode parameter if scroll mode is selected
+    if (selectedMode === 'scroll') {
+      url.searchParams.set('mode', 'scroll');
+    } else {
+      url.searchParams.delete('mode');
+    }
+
+    const shareLink = url.toString();
     this.shareLinkInput.value = shareLink;
 
     // Generate embed code (Speaker Deck style)
     const embedCode = `<iframe class="slidef-iframe" frameborder="0" src="${shareLink}" title="${this.metadata.title || this.metadata.name}" allowfullscreen="true" style="border: 0px; background: padding-box padding-box rgba(0, 0, 0, 0.1); margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" data-ratio="1.7777777777777777"></iframe>`;
     this.shareEmbedInput.value = embedCode;
-
-    // Show modal
-    this.shareModal.classList.remove('hidden');
   }
 
   closeShareModal() {
@@ -549,50 +598,6 @@ class SlidefViewer {
     } catch (err) {
       console.error('Failed to copy:', err);
       alert('Failed to copy to clipboard');
-    }
-  }
-
-  handleTouchStart(e) {
-    // Don't handle touch in scroll mode or when modal is open
-    if (document.body.classList.contains('scroll-mode') ||
-        !this.overviewModal.classList.contains('hidden') ||
-        !this.shareModal.classList.contains('hidden')) {
-      return;
-    }
-
-    this.touchStartX = e.changedTouches[0].screenX;
-    this.touchStartY = e.changedTouches[0].screenY;
-  }
-
-  handleTouchEnd(e) {
-    // Don't handle touch in scroll mode or when modal is open
-    if (document.body.classList.contains('scroll-mode') ||
-        !this.overviewModal.classList.contains('hidden') ||
-        !this.shareModal.classList.contains('hidden')) {
-      return;
-    }
-
-    this.touchEndX = e.changedTouches[0].screenX;
-    this.touchEndY = e.changedTouches[0].screenY;
-    this.handleSwipe();
-  }
-
-  handleSwipe() {
-    const deltaX = this.touchEndX - this.touchStartX;
-    const deltaY = this.touchEndY - this.touchStartY;
-
-    // Minimum swipe distance (50px)
-    const minSwipeDistance = 50;
-
-    // Check if horizontal swipe is dominant
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
-      if (deltaX > 0) {
-        // Swipe right = previous slide
-        this.previousSlide();
-      } else {
-        // Swipe left = next slide
-        this.nextSlide();
-      }
     }
   }
 }

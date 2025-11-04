@@ -82,7 +82,7 @@ class SlideIndex {
   createSlideCard(slide) {
     const card = document.createElement('a');
     card.className = 'slide-card';
-    card.href = `viewer.html?slide=${slide.name}`;
+    card.href = `viewer.html?slide=${slide.name}&from=list`;
 
     const thumbnail = document.createElement('img');
     thumbnail.className = 'slide-thumbnail';
