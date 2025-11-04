@@ -17,6 +17,12 @@ class SlidefViewer {
     this.hideControlsTimer = null;
     this.wheelThrottleTimer = null;
 
+    // Touch state
+    this.touchStartX = 0;
+    this.touchStartY = 0;
+    this.touchEndX = 0;
+    this.touchEndY = 0;
+
     // DOM elements
     this.slideImage = document.getElementById('slide-image');
     this.navAreaPrev = document.getElementById('nav-area-prev');
@@ -154,6 +160,10 @@ class SlidefViewer {
 
     // Show/hide controls on mouse move
     document.addEventListener('mousemove', () => this.showControls());
+
+    // Touch events for swipe navigation (only in slide mode)
+    document.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
+    document.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: true });
 
     // Initial show
     this.showControls();
@@ -539,6 +549,50 @@ class SlidefViewer {
     } catch (err) {
       console.error('Failed to copy:', err);
       alert('Failed to copy to clipboard');
+    }
+  }
+
+  handleTouchStart(e) {
+    // Don't handle touch in scroll mode or when modal is open
+    if (document.body.classList.contains('scroll-mode') ||
+        !this.overviewModal.classList.contains('hidden') ||
+        !this.shareModal.classList.contains('hidden')) {
+      return;
+    }
+
+    this.touchStartX = e.changedTouches[0].screenX;
+    this.touchStartY = e.changedTouches[0].screenY;
+  }
+
+  handleTouchEnd(e) {
+    // Don't handle touch in scroll mode or when modal is open
+    if (document.body.classList.contains('scroll-mode') ||
+        !this.overviewModal.classList.contains('hidden') ||
+        !this.shareModal.classList.contains('hidden')) {
+      return;
+    }
+
+    this.touchEndX = e.changedTouches[0].screenX;
+    this.touchEndY = e.changedTouches[0].screenY;
+    this.handleSwipe();
+  }
+
+  handleSwipe() {
+    const deltaX = this.touchEndX - this.touchStartX;
+    const deltaY = this.touchEndY - this.touchStartY;
+
+    // Minimum swipe distance (50px)
+    const minSwipeDistance = 50;
+
+    // Check if horizontal swipe is dominant
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        // Swipe right = previous slide
+        this.previousSlide();
+      } else {
+        // Swipe left = next slide
+        this.nextSlide();
+      }
     }
   }
 }
