@@ -21,16 +21,15 @@ class SlidefViewer {
     this.navAreaPrev = document.getElementById('nav-area-prev');
     this.navAreaNext = document.getElementById('nav-area-next');
     this.closeButton = document.getElementById('close-button');
-    this.scrollModeToggle = document.getElementById('scroll-mode-toggle');
     this.overviewButton = document.getElementById('overview-button');
     this.shareButton = document.getElementById('share-button');
     this.fullscreenToggle = document.getElementById('fullscreen-toggle');
     this.progressBar = document.getElementById('progress-bar');
     this.progressFill = document.getElementById('progress-fill');
+    this.currentSlideEl = document.getElementById('current-slide');
     this.thumbnailPreview = document.getElementById('thumbnail-preview');
     this.thumbnailImage = document.getElementById('thumbnail-image');
     this.thumbnailNumber = document.getElementById('thumbnail-number');
-    this.scrollContainer = document.getElementById('scroll-container');
     this.overviewModal = document.getElementById('overview-modal');
     this.overviewModalClose = document.getElementById('overview-modal-close');
     this.overviewGrid = document.getElementById('overview-grid');
@@ -80,9 +79,6 @@ class SlidefViewer {
     this.closeButton.addEventListener('click', () => {
       window.location.href = 'index.html';
     });
-
-    // Scroll mode toggle
-    this.scrollModeToggle.addEventListener('click', () => this.toggleScrollMode());
 
     // Overview button
     this.overviewButton.addEventListener('click', () => this.openOverviewModal());
@@ -244,15 +240,10 @@ class SlidefViewer {
     // Update image
     this.slideImage.src = this.slideImages[this.currentSlide - 1];
 
-    // Preload next slide image
-    if (this.currentSlide < this.totalSlides) {
-      const nextImage = new Image();
-      nextImage.src = this.slideImages[this.currentSlide];
-    }
-
     // Update progress
     const progress = (this.currentSlide / this.totalSlides) * 100;
     this.progressFill.style.width = `${progress}%`;
+    this.currentSlideEl.textContent = this.currentSlide;
 
     // Update navigation areas
     if (this.currentSlide === 1) {
@@ -313,45 +304,6 @@ class SlidefViewer {
       enterIcon.classList.remove('hidden');
       exitIcon.classList.add('hidden');
     }
-  }
-
-  toggleScrollMode() {
-    const isScrollMode = document.body.classList.toggle('scroll-mode');
-
-    // Update icon
-    const slideIcon = document.querySelector('.slide-mode-icon');
-    const scrollIcon = document.querySelector('.scroll-mode-icon');
-
-    if (isScrollMode) {
-      slideIcon.classList.remove('hidden');
-      scrollIcon.classList.add('hidden');
-      this.enterScrollMode();
-    } else {
-      slideIcon.classList.add('hidden');
-      scrollIcon.classList.remove('hidden');
-      this.exitScrollMode();
-    }
-  }
-
-  enterScrollMode() {
-    // Clear scroll container
-    this.scrollContainer.innerHTML = '';
-
-    // Add all slides to scroll container
-    for (let i = 1; i <= this.totalSlides; i++) {
-      const slideImg = document.createElement('img');
-      slideImg.className = 'scroll-slide';
-      slideImg.src = this.slideImages[i - 1];
-      slideImg.alt = `Slide ${i}`;
-      slideImg.loading = 'lazy';
-      this.scrollContainer.appendChild(slideImg);
-    }
-
-    this.scrollContainer.classList.remove('hidden');
-  }
-
-  exitScrollMode() {
-    this.scrollContainer.classList.add('hidden');
   }
 
   openShareModal() {

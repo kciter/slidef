@@ -77,49 +77,6 @@ body.controls-visible .menu-container {
   -webkit-user-drag: none;
 }
 
-/* Scroll container */
-.scroll-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background-color: #b2b2b2;
-  padding: var(--spacing-md) 0;
-}
-
-.scroll-slide {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto var(--spacing-md) auto;
-  display: block;
-}
-
-.scroll-slide:last-child {
-  margin-bottom: 0;
-}
-
-/* Hide slide container in scroll mode */
-body.scroll-mode .slide-container {
-  display: none;
-}
-
-body.scroll-mode .scroll-container {
-  display: block;
-}
-
-/* Hide navigation areas in scroll mode */
-body.scroll-mode .nav-area {
-  display: none;
-}
-
-/* Hide progress bar in scroll mode */
-body.scroll-mode .progress-container {
-  display: none;
-}
-
 /* Click areas for navigation */
 .nav-area {
   position: fixed;
@@ -186,6 +143,25 @@ body.controls-visible .progress-container {
   height: 100%;
   background: var(--progress-fill);
   transition: width var(--transition-fast);
+}
+
+.progress-info {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  background: var(--overlay-bg);
+  padding: 4px 12px;
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+.progress-container:hover .progress-info {
+  opacity: 1;
 }
 
 /* Thumbnail preview */
