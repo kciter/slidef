@@ -12,11 +12,19 @@ Slidef is a CLI tool that converts your PDF presentations into a modern, web-bas
 - **Static Export**: Generate static sites for easy deployment (GitHub Pages, Netlify, etc.)
 - **Slide Management**: Edit slide metadata, titles, descriptions, and dates via web UI
 - **Theme Customization**: Customize colors and fonts to match your brand
-- **Clean URLs**: SEO-friendly URLs without `.html` extensions
-- **Progress Bar**: Visual progress indicator while viewing slides
-- **Keyboard Navigation**: Arrow keys, space, and more for easy navigation
 
 ## Installation
+
+### Option 1: Quick Start with npm init (Recommended)
+
+```bash
+npm init slidef my-slides
+cd my-slides
+```
+
+This will create a new project directory, install Slidef, and initialize the project automatically.
+
+### Option 2: Global Installation
 
 ```bash
 npm install -g @slidef/cli
@@ -26,7 +34,14 @@ pnpm add -g @slidef/cli
 
 ## Quick Start
 
-### 1. Initialize a new project
+### Using npm init (if not already initialized)
+
+```bash
+npm init slidef my-slides
+cd my-slides
+```
+
+### Using global installation
 
 ```bash
 mkdir my-slides
@@ -260,16 +275,6 @@ npm link
 
 MIT
 
-## Author
-
-[kciter](https://github.com/kciter)
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Acknowledgments
-
-- Inspired by [Speaker Deck](https://speakerdeck.com/)
-- Built with [pdfjs-dist](https://github.com/mozilla/pdf.js) for PDF processing
-- Uses [@napi-rs/canvas](https://github.com/Brooooooklyn/canvas) for image generation

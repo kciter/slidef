@@ -1,6 +1,6 @@
 {
   "name": "@slidef/cli",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "CLI tool for converting PDF slides to web-viewable format",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,10 +21,21 @@
     "slides",
     "converter",
     "presentation",
-    "cli"
+    "cli",
+    "speaker-deck",
+    "web-viewer",
+    "slide-hosting"
   ],
   "author": "kciter",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kciter/slidef.git"
+  },
+  "homepage": "https://github.com/kciter/slidef#readme",
+  "bugs": {
+    "url": "https://github.com/kciter/slidef/issues"
+  },
   "dependencies": {
     "@napi-rs/canvas": "^0.1.81",
     "chalk": "^5.3.0",

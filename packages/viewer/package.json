@@ -1,7 +1,8 @@
 {
   "name": "@slidef/viewer",
-  "version": "0.0.1",
-  "description": "Slidef viewer UI",
+  "version": "1.0.0",
+  "description": "Slidef viewer UI - internal use only",
+  "private": true,
   "type": "module",
   "files": [
     "src"
