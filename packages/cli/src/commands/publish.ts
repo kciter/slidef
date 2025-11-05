@@ -87,15 +87,20 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
     // Copy viewer files from viewer package
     const viewerDir = path.join(__dirname, '../../../viewer/src');
 
-    // Copy HTML files
-    await fs.copyFile(
-      path.join(viewerDir, 'index.html'),
-      path.join(outputDir, 'index.html')
-    );
-    await fs.copyFile(
-      path.join(viewerDir, 'viewer.html'),
-      path.join(outputDir, 'viewer.html')
-    );
+    // Copy and customize HTML files
+    let indexHtml = await fs.readFile(path.join(viewerDir, 'index.html'), 'utf-8');
+    let viewerHtml = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
+
+    // Apply theme customization
+    if (config.theme) {
+      const themeStyles = generateThemeStyles(config.theme);
+      const styleTag = `<style>${themeStyles}</style></head>`;
+      indexHtml = indexHtml.replace('</head>', styleTag);
+      viewerHtml = viewerHtml.replace('</head>', styleTag);
+    }
+
+    await fs.writeFile(path.join(outputDir, 'index.html'), indexHtml, 'utf-8');
+    await fs.writeFile(path.join(outputDir, 'viewer.html'), viewerHtml, 'utf-8');
 
     // Copy CSS directory
     const cssOutputDir = path.join(outputDir, 'css');
@@ -131,7 +136,6 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
     spinner.text = 'Creating slide routes...';
 
     // Create directory for each slide with index.html (for clean URLs without .html)
-    const viewerHtml = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
     for (const slide of slides) {
       const slideRouteDir = path.join(outputDir, slide.name);
       await fs.mkdir(slideRouteDir, { recursive: true });

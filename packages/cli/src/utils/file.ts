@@ -44,6 +44,13 @@ export async function getAllSlides(slidesDir: string): Promise<SlideMetadata[]> 
       }
     }
 
+    // Sort by createdAt date (newest first)
+    slides.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+
     return slides;
   } catch {
     return [];

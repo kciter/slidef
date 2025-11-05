@@ -33,6 +33,10 @@ export async function initCommand(options: InitOptions) {
       subtitle: options.subtitle || 'View and manage your slide decks',
       publishDir: 'public',
       slidesDir: 'slides',
+      theme: {
+        primaryColor: '#007bff',
+        progressColor: '#A020F0',
+      },
     };
 
     await fs.writeFile(

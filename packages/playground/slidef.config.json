@@ -2,5 +2,10 @@
   "title": "My Slide Presentations",
   "subtitle": "View and manage your slide decks",
   "publishDir": "public",
-  "slidesDir": "slides"
+  "slidesDir": "slides",
+  "theme": {
+    "primaryColor": "#ff6b6b",
+    "progressColor": "#4ecdc4",
+    "fontFamily": "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+  }
 }
