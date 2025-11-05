@@ -33,7 +33,6 @@ export async function initCommand(options: InitOptions) {
       subtitle: options.subtitle || 'View and manage your slide decks',
       publishDir: 'public',
       slidesDir: 'slides',
-      createdAt: new Date().toISOString(),
     };
 
     await fs.writeFile(

@@ -7,8 +7,8 @@ class SlidefViewer {
   constructor() {
     // Get slide info from URL
     const params = new URLSearchParams(window.location.search);
-    this.slideName = params.get('slide') || '';
-    this.currentSlide = parseInt(params.get('page') || '1', 10);
+    this.slideName = params.get("slide") || "";
+    this.currentSlide = parseInt(params.get("page") || "1", 10);
 
     // State
     this.totalSlides = 0;
@@ -18,32 +18,32 @@ class SlidefViewer {
     this.wheelThrottleTimer = null;
 
     // DOM elements
-    this.slidesWrapper = document.getElementById('slides-wrapper');
-    this.slidePrev = document.getElementById('slide-prev');
-    this.slideCurrent = document.getElementById('slide-current');
-    this.slideNext = document.getElementById('slide-next');
-    this.navAreaPrev = document.getElementById('nav-area-prev');
-    this.navAreaNext = document.getElementById('nav-area-next');
-    this.closeButton = document.getElementById('close-button');
-    this.scrollModeToggle = document.getElementById('scroll-mode-toggle');
-    this.overviewButton = document.getElementById('overview-button');
-    this.shareButton = document.getElementById('share-button');
-    this.fullscreenToggle = document.getElementById('fullscreen-toggle');
-    this.progressBar = document.getElementById('progress-bar');
-    this.progressFill = document.getElementById('progress-fill');
-    this.thumbnailPreview = document.getElementById('thumbnail-preview');
-    this.thumbnailImage = document.getElementById('thumbnail-image');
-    this.thumbnailNumber = document.getElementById('thumbnail-number');
-    this.scrollContainer = document.getElementById('scroll-container');
-    this.overviewModal = document.getElementById('overview-modal');
-    this.overviewModalClose = document.getElementById('overview-modal-close');
-    this.overviewGrid = document.getElementById('overview-grid');
-    this.shareModal = document.getElementById('share-modal');
-    this.shareModalClose = document.getElementById('share-modal-close');
-    this.shareLinkInput = document.getElementById('share-link-input');
-    this.shareEmbedInput = document.getElementById('share-embed-input');
-    this.copyLinkButton = document.getElementById('copy-link-button');
-    this.copyEmbedButton = document.getElementById('copy-embed-button');
+    this.slidesWrapper = document.getElementById("slides-wrapper");
+    this.slidePrev = document.getElementById("slide-prev");
+    this.slideCurrent = document.getElementById("slide-current");
+    this.slideNext = document.getElementById("slide-next");
+    this.navAreaPrev = document.getElementById("nav-area-prev");
+    this.navAreaNext = document.getElementById("nav-area-next");
+    this.closeButton = document.getElementById("close-button");
+    this.scrollModeToggle = document.getElementById("scroll-mode-toggle");
+    this.overviewButton = document.getElementById("overview-button");
+    this.shareButton = document.getElementById("share-button");
+    this.fullscreenToggle = document.getElementById("fullscreen-toggle");
+    this.progressBar = document.getElementById("progress-bar");
+    this.progressFill = document.getElementById("progress-fill");
+    this.thumbnailPreview = document.getElementById("thumbnail-preview");
+    this.thumbnailImage = document.getElementById("thumbnail-image");
+    this.thumbnailNumber = document.getElementById("thumbnail-number");
+    this.scrollContainer = document.getElementById("scroll-container");
+    this.overviewModal = document.getElementById("overview-modal");
+    this.overviewModalClose = document.getElementById("overview-modal-close");
+    this.overviewGrid = document.getElementById("overview-grid");
+    this.shareModal = document.getElementById("share-modal");
+    this.shareModalClose = document.getElementById("share-modal-close");
+    this.shareLinkInput = document.getElementById("share-link-input");
+    this.shareEmbedInput = document.getElementById("share-embed-input");
+    this.copyLinkButton = document.getElementById("copy-link-button");
+    this.copyEmbedButton = document.getElementById("copy-embed-button");
 
     this.init();
   }
@@ -56,32 +56,32 @@ class SlidefViewer {
 
       // Update URL if page query is missing
       const params = new URLSearchParams(window.location.search);
-      if (!params.has('page')) {
+      if (!params.has("page")) {
         const url = new URL(window.location);
-        url.searchParams.set('page', this.currentSlide);
-        window.history.replaceState({}, '', url);
+        url.searchParams.set("page", this.currentSlide);
+        window.history.replaceState({}, "", url);
       }
 
       // Enable scroll mode by default on mobile or if mode=scroll in URL
-      const mode = params.get('mode');
-      if (window.innerWidth <= 768 || mode === 'scroll') {
+      const mode = params.get("mode");
+      if (window.innerWidth <= 768 || mode === "scroll") {
         this.toggleScrollMode();
       }
 
       // Show close button only if coming from list page
-      const isFromList = params.get('from') === 'list';
+      const isFromList = params.get("from") === "list";
       if (!isFromList) {
-        this.closeButton.parentElement.style.display = 'none';
+        this.closeButton.parentElement.style.display = "none";
       }
     } catch (error) {
-      console.error('Failed to initialize viewer:', error);
+      console.error("Failed to initialize viewer:", error);
     }
   }
 
   async loadMetadata() {
     const response = await fetch(`slides/${this.slideName}/metadata.json`);
     if (!response.ok) {
-      throw new Error('Failed to load metadata');
+      throw new Error("Failed to load metadata");
     }
 
     this.metadata = await response.json();
@@ -89,105 +89,135 @@ class SlidefViewer {
 
     // Generate image paths
     this.slideImages = Array.from({ length: this.totalSlides }, (_, i) => {
-      const pageNum = String(i + 1).padStart(3, '0');
+      const pageNum = String(i + 1).padStart(3, "0");
       return `slides/${this.slideName}/images/slide-${pageNum}.png`;
     });
   }
 
   setupEventListeners() {
     // Navigation areas
-    this.navAreaPrev.addEventListener('click', () => this.previousSlide());
-    this.navAreaNext.addEventListener('click', () => this.nextSlide());
+    this.navAreaPrev.addEventListener("click", () => this.previousSlide());
+    this.navAreaNext.addEventListener("click", () => this.nextSlide());
 
     // Close button
-    this.closeButton.addEventListener('click', () => {
-      window.location.href = 'index.html';
+    this.closeButton.addEventListener("click", () => {
+      window.location.href = "/";
     });
 
     // Scroll mode toggle
-    this.scrollModeToggle.addEventListener('click', () => this.toggleScrollMode());
+    this.scrollModeToggle.addEventListener("click", () =>
+      this.toggleScrollMode()
+    );
 
     // Overview button
-    this.overviewButton.addEventListener('click', () => this.openOverviewModal());
+    this.overviewButton.addEventListener("click", () =>
+      this.openOverviewModal()
+    );
 
     // Share button
-    this.shareButton.addEventListener('click', () => this.openShareModal());
+    this.shareButton.addEventListener("click", () => this.openShareModal());
 
     // Fullscreen toggle
-    this.fullscreenToggle.addEventListener('click', () => this.toggleFullscreen());
+    this.fullscreenToggle.addEventListener("click", () =>
+      this.toggleFullscreen()
+    );
 
     // Overview modal close
-    this.overviewModalClose.addEventListener('click', () => this.closeOverviewModal());
+    this.overviewModalClose.addEventListener("click", () =>
+      this.closeOverviewModal()
+    );
 
     // Prevent wheel events from affecting overview modal scroll
-    this.overviewModal.addEventListener('wheel', (e) => {
-      e.stopPropagation();
-    }, { passive: true });
+    this.overviewModal.addEventListener(
+      "wheel",
+      (e) => {
+        e.stopPropagation();
+      },
+      { passive: true }
+    );
 
     // Prevent wheel events from affecting share modal scroll
-    this.shareModal.addEventListener('wheel', (e) => {
-      e.stopPropagation();
-    }, { passive: true });
+    this.shareModal.addEventListener(
+      "wheel",
+      (e) => {
+        e.stopPropagation();
+      },
+      { passive: true }
+    );
 
     // Share modal close
-    this.shareModalClose.addEventListener('click', () => this.closeShareModal());
-    this.shareModal.addEventListener('click', (e) => {
+    this.shareModalClose.addEventListener("click", () =>
+      this.closeShareModal()
+    );
+    this.shareModal.addEventListener("click", (e) => {
       if (e.target === this.shareModal) {
         this.closeShareModal();
       }
     });
 
     // Copy buttons
-    this.copyLinkButton.addEventListener('click', () => this.copyToClipboard(this.shareLinkInput.value, 'Link copied!'));
-    this.copyEmbedButton.addEventListener('click', () => this.copyToClipboard(this.shareEmbedInput.value, 'Embed code copied!'));
+    this.copyLinkButton.addEventListener("click", () =>
+      this.copyToClipboard(this.shareLinkInput.value, "Link copied!")
+    );
+    this.copyEmbedButton.addEventListener("click", () =>
+      this.copyToClipboard(this.shareEmbedInput.value, "Embed code copied!")
+    );
 
     // Share mode radio buttons - update URLs when changed
-    document.querySelectorAll('input[name="share-mode"]').forEach(radio => {
-      radio.addEventListener('change', () => this.updateShareURLs());
+    document.querySelectorAll('input[name="share-mode"]').forEach((radio) => {
+      radio.addEventListener("change", () => this.updateShareURLs());
     });
 
     // Keyboard navigation
-    document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+    document.addEventListener("keydown", (e) => this.handleKeyPress(e));
 
     // Mouse wheel navigation (only in slide mode, not scroll mode)
-    document.addEventListener('wheel', (e) => this.handleWheel(e), { passive: false });
+    document.addEventListener("wheel", (e) => this.handleWheel(e), {
+      passive: false,
+    });
 
     // Progress bar click
-    this.progressBar.addEventListener('click', (e) => this.handleProgressClick(e));
+    this.progressBar.addEventListener("click", (e) =>
+      this.handleProgressClick(e)
+    );
 
     // Progress bar hover for thumbnail
-    this.progressBar.addEventListener('mousemove', (e) => this.showThumbnail(e));
-    this.progressBar.addEventListener('mouseleave', () => this.hideThumbnail());
+    this.progressBar.addEventListener("mousemove", (e) =>
+      this.showThumbnail(e)
+    );
+    this.progressBar.addEventListener("mouseleave", () => this.hideThumbnail());
 
     // Prevent context menu on slide images
-    this.slidePrev.addEventListener('contextmenu', (e) => e.preventDefault());
-    this.slideCurrent.addEventListener('contextmenu', (e) => e.preventDefault());
-    this.slideNext.addEventListener('contextmenu', (e) => e.preventDefault());
+    this.slidePrev.addEventListener("contextmenu", (e) => e.preventDefault());
+    this.slideCurrent.addEventListener("contextmenu", (e) =>
+      e.preventDefault()
+    );
+    this.slideNext.addEventListener("contextmenu", (e) => e.preventDefault());
 
     // Update URL on slide change
-    window.addEventListener('popstate', () => {
+    window.addEventListener("popstate", () => {
       const params = new URLSearchParams(window.location.search);
-      const page = parseInt(params.get('page') || '1', 10);
+      const page = parseInt(params.get("page") || "1", 10);
       this.showSlide(page, false);
     });
 
     // Listen for fullscreen changes
-    document.addEventListener('fullscreenchange', () => {
+    document.addEventListener("fullscreenchange", () => {
       this.updateFullscreenIcon(!!document.fullscreenElement);
     });
-    document.addEventListener('webkitfullscreenchange', () => {
+    document.addEventListener("webkitfullscreenchange", () => {
       this.updateFullscreenIcon(!!document.webkitFullscreenElement);
     });
 
     // Show/hide controls on mouse move
-    document.addEventListener('mousemove', () => this.showControls());
+    document.addEventListener("mousemove", () => this.showControls());
 
     // Initial show
     this.showControls();
   }
 
   showControls() {
-    document.body.classList.add('controls-visible');
+    document.body.classList.add("controls-visible");
 
     // Clear existing timer
     if (this.hideControlsTimer) {
@@ -196,19 +226,19 @@ class SlidefViewer {
 
     // Hide after 3 seconds
     this.hideControlsTimer = setTimeout(() => {
-      document.body.classList.remove('controls-visible');
+      document.body.classList.remove("controls-visible");
     }, 3000);
   }
 
   handleKeyPress(e) {
     // Handle ESC key for closing modals
-    if (e.key === 'Escape') {
-      if (!this.overviewModal.classList.contains('hidden')) {
+    if (e.key === "Escape") {
+      if (!this.overviewModal.classList.contains("hidden")) {
         e.preventDefault();
         this.closeOverviewModal();
         return;
       }
-      if (!this.shareModal.classList.contains('hidden')) {
+      if (!this.shareModal.classList.contains("hidden")) {
         e.preventDefault();
         this.closeShareModal();
         return;
@@ -216,24 +246,24 @@ class SlidefViewer {
     }
 
     switch (e.key) {
-      case 'ArrowLeft':
-      case 'ArrowUp':
-      case 'PageUp':
+      case "ArrowLeft":
+      case "ArrowUp":
+      case "PageUp":
         e.preventDefault();
         this.previousSlide();
         break;
-      case 'ArrowRight':
-      case 'ArrowDown':
-      case 'PageDown':
-      case ' ':
+      case "ArrowRight":
+      case "ArrowDown":
+      case "PageDown":
+      case " ":
         e.preventDefault();
         this.nextSlide();
         break;
-      case 'Home':
+      case "Home":
         e.preventDefault();
         this.goToSlide(1);
         break;
-      case 'End':
+      case "End":
         e.preventDefault();
         this.goToSlide(this.totalSlides);
         break;
@@ -242,8 +272,10 @@ class SlidefViewer {
 
   handleWheel(e) {
     // Don't handle wheel in scroll mode or when modal is open
-    if (document.body.classList.contains('scroll-mode') ||
-        !this.overviewModal.classList.contains('hidden')) {
+    if (
+      document.body.classList.contains("scroll-mode") ||
+      !this.overviewModal.classList.contains("hidden")
+    ) {
       return;
     }
 
@@ -273,10 +305,10 @@ class SlidefViewer {
     const rect = this.progressBar.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const percentage = x / rect.width;
-    const targetSlide = Math.max(1, Math.min(
-      this.totalSlides,
-      Math.ceil(percentage * this.totalSlides)
-    ));
+    const targetSlide = Math.max(
+      1,
+      Math.min(this.totalSlides, Math.ceil(percentage * this.totalSlides))
+    );
     this.goToSlide(targetSlide);
   }
 
@@ -284,23 +316,23 @@ class SlidefViewer {
     const rect = this.progressBar.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const percentage = x / rect.width;
-    const targetSlide = Math.max(1, Math.min(
-      this.totalSlides,
-      Math.ceil(percentage * this.totalSlides)
-    ));
+    const targetSlide = Math.max(
+      1,
+      Math.min(this.totalSlides, Math.ceil(percentage * this.totalSlides))
+    );
 
     // Position thumbnail
     this.thumbnailPreview.style.left = `${e.clientX}px`;
-    this.thumbnailPreview.style.transform = 'translateX(-50%)';
+    this.thumbnailPreview.style.transform = "translateX(-50%)";
 
     // Update thumbnail
     this.thumbnailImage.src = this.slideImages[targetSlide - 1];
     this.thumbnailNumber.textContent = `${targetSlide} / ${this.totalSlides}`;
-    this.thumbnailPreview.classList.remove('hidden');
+    this.thumbnailPreview.classList.remove("hidden");
   }
 
   hideThumbnail() {
-    this.thumbnailPreview.classList.add('hidden');
+    this.thumbnailPreview.classList.add("hidden");
   }
 
   previousSlide() {
@@ -323,8 +355,8 @@ class SlidefViewer {
     this.currentSlide = Math.max(1, Math.min(slideNumber, this.totalSlides));
 
     // Reset wrapper transform
-    this.slidesWrapper.style.transform = 'translateX(0)';
-    this.slidesWrapper.style.transition = 'none';
+    this.slidesWrapper.style.transform = "translateX(0)";
+    this.slidesWrapper.style.transition = "none";
 
     // Update current slide
     this.slideCurrent.src = this.slideImages[this.currentSlide - 1];
@@ -332,17 +364,17 @@ class SlidefViewer {
     // Update previous slide
     if (this.currentSlide > 1) {
       this.slidePrev.src = this.slideImages[this.currentSlide - 2];
-      this.slidePrev.style.display = 'block';
+      this.slidePrev.style.display = "block";
     } else {
-      this.slidePrev.style.display = 'none';
+      this.slidePrev.style.display = "none";
     }
 
     // Update next slide
     if (this.currentSlide < this.totalSlides) {
       this.slideNext.src = this.slideImages[this.currentSlide];
-      this.slideNext.style.display = 'block';
+      this.slideNext.style.display = "block";
     } else {
-      this.slideNext.style.display = 'none';
+      this.slideNext.style.display = "none";
     }
 
     // Update progress
@@ -351,26 +383,28 @@ class SlidefViewer {
 
     // Update navigation areas
     if (this.currentSlide === 1) {
-      this.navAreaPrev.style.display = 'none';
+      this.navAreaPrev.style.display = "none";
     } else {
-      this.navAreaPrev.style.display = 'block';
+      this.navAreaPrev.style.display = "block";
     }
 
     if (this.currentSlide === this.totalSlides) {
-      this.navAreaNext.style.display = 'none';
+      this.navAreaNext.style.display = "none";
     } else {
-      this.navAreaNext.style.display = 'block';
+      this.navAreaNext.style.display = "block";
     }
 
     // Update URL
     if (updateHistory) {
       const url = new URL(window.location);
-      url.searchParams.set('page', this.currentSlide);
-      window.history.replaceState({}, '', url);
+      url.searchParams.set("page", this.currentSlide);
+      window.history.replaceState({}, "", url);
     }
 
     // Update document title
-    document.title = `${this.metadata.title || this.metadata.name} - Slide ${this.currentSlide}`;
+    document.title = `${this.metadata.title || this.metadata.name} - Slide ${
+      this.currentSlide
+    }`;
   }
 
   toggleFullscreen() {
@@ -379,8 +413,8 @@ class SlidefViewer {
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
       // Enter fullscreen
       if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(err => {
-          console.error('Failed to enter fullscreen:', err);
+        elem.requestFullscreen().catch((err) => {
+          console.error("Failed to enter fullscreen:", err);
         });
       } else if (elem.webkitRequestFullscreen) {
         elem.webkitRequestFullscreen();
@@ -388,8 +422,8 @@ class SlidefViewer {
     } else {
       // Exit fullscreen
       if (document.exitFullscreen) {
-        document.exitFullscreen().catch(err => {
-          console.error('Failed to exit fullscreen:', err);
+        document.exitFullscreen().catch((err) => {
+          console.error("Failed to exit fullscreen:", err);
         });
       } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
@@ -398,54 +432,56 @@ class SlidefViewer {
   }
 
   updateFullscreenIcon(isFullscreen) {
-    const enterIcon = document.querySelector('.fullscreen-enter-icon');
-    const exitIcon = document.querySelector('.fullscreen-exit-icon');
+    const enterIcon = document.querySelector(".fullscreen-enter-icon");
+    const exitIcon = document.querySelector(".fullscreen-exit-icon");
 
     if (isFullscreen) {
-      enterIcon.classList.add('hidden');
-      exitIcon.classList.remove('hidden');
+      enterIcon.classList.add("hidden");
+      exitIcon.classList.remove("hidden");
     } else {
-      enterIcon.classList.remove('hidden');
-      exitIcon.classList.add('hidden');
+      enterIcon.classList.remove("hidden");
+      exitIcon.classList.add("hidden");
     }
   }
 
   toggleScrollMode() {
-    const isScrollMode = document.body.classList.toggle('scroll-mode');
+    const isScrollMode = document.body.classList.toggle("scroll-mode");
 
     // Update icon
-    const slideIcon = document.querySelector('.slide-mode-icon');
-    const scrollIcon = document.querySelector('.scroll-mode-icon');
+    const slideIcon = document.querySelector(".slide-mode-icon");
+    const scrollIcon = document.querySelector(".scroll-mode-icon");
 
     if (isScrollMode) {
-      slideIcon.classList.remove('hidden');
-      scrollIcon.classList.add('hidden');
+      slideIcon.classList.remove("hidden");
+      scrollIcon.classList.add("hidden");
       this.enterScrollMode();
     } else {
-      slideIcon.classList.add('hidden');
-      scrollIcon.classList.remove('hidden');
+      slideIcon.classList.add("hidden");
+      scrollIcon.classList.remove("hidden");
       this.exitScrollMode();
     }
   }
 
   enterScrollMode() {
     // Clear scroll container
-    this.scrollContainer.innerHTML = '';
+    this.scrollContainer.innerHTML = "";
 
     // Add all slides to scroll container
     for (let i = 1; i <= this.totalSlides; i++) {
-      const slideImg = document.createElement('img');
-      slideImg.className = 'scroll-slide';
+      const slideImg = document.createElement("img");
+      slideImg.className = "scroll-slide";
       slideImg.src = this.slideImages[i - 1];
       slideImg.alt = `Slide ${i}`;
-      slideImg.loading = 'lazy';
+      slideImg.loading = "lazy";
       this.scrollContainer.appendChild(slideImg);
     }
 
-    this.scrollContainer.classList.remove('hidden');
+    this.scrollContainer.classList.remove("hidden");
 
     // Add scroll event listener to update progress bar
-    this.scrollContainer.addEventListener('scroll', () => this.updateScrollProgress());
+    this.scrollContainer.addEventListener("scroll", () =>
+      this.updateScrollProgress()
+    );
 
     // Scroll to current slide position
     this.scrollToCurrentSlide();
@@ -455,10 +491,12 @@ class SlidefViewer {
     // Calculate which slide is currently visible before exiting
     this.updateCurrentSlideFromScroll();
 
-    this.scrollContainer.classList.add('hidden');
+    this.scrollContainer.classList.add("hidden");
 
     // Remove scroll event listener
-    this.scrollContainer.removeEventListener('scroll', () => this.updateScrollProgress());
+    this.scrollContainer.removeEventListener("scroll", () =>
+      this.updateScrollProgress()
+    );
 
     // Show the current slide in slide mode
     this.showSlide(this.currentSlide, true);
@@ -466,11 +504,12 @@ class SlidefViewer {
 
   scrollToCurrentSlide() {
     // Calculate scroll position for current slide
-    const slideElements = this.scrollContainer.querySelectorAll('.scroll-slide');
+    const slideElements =
+      this.scrollContainer.querySelectorAll(".scroll-slide");
     if (slideElements.length > 0 && this.currentSlide > 0) {
       const targetSlide = slideElements[this.currentSlide - 1];
       if (targetSlide) {
-        targetSlide.scrollIntoView({ behavior: 'auto', block: 'center' });
+        targetSlide.scrollIntoView({ behavior: "auto", block: "center" });
       }
     }
   }
@@ -486,7 +525,8 @@ class SlidefViewer {
 
   updateCurrentSlideFromScroll() {
     // Find which slide is currently most visible
-    const slideElements = this.scrollContainer.querySelectorAll('.scroll-slide');
+    const slideElements =
+      this.scrollContainer.querySelectorAll(".scroll-slide");
     const scrollTop = this.scrollContainer.scrollTop;
     const containerHeight = this.scrollContainer.clientHeight;
     const centerY = scrollTop + containerHeight / 2;
@@ -513,63 +553,67 @@ class SlidefViewer {
     this.updateShareURLs();
 
     // Show modal
-    this.shareModal.classList.remove('hidden');
+    this.shareModal.classList.remove("hidden");
   }
 
   updateShareURLs() {
     // Get current URL and remove 'from' parameter
     const url = new URL(window.location.href);
-    url.searchParams.delete('from');
+    url.searchParams.delete("from");
 
     // Get selected mode
-    const selectedMode = document.querySelector('input[name="share-mode"]:checked').value;
+    const selectedMode = document.querySelector(
+      'input[name="share-mode"]:checked'
+    ).value;
 
     // Add mode parameter if scroll mode is selected
-    if (selectedMode === 'scroll') {
-      url.searchParams.set('mode', 'scroll');
+    if (selectedMode === "scroll") {
+      url.searchParams.set("mode", "scroll");
     } else {
-      url.searchParams.delete('mode');
+      url.searchParams.delete("mode");
     }
 
     const shareLink = url.toString();
     this.shareLinkInput.value = shareLink;
 
     // Generate embed code (Speaker Deck style)
-    const embedCode = `<iframe class="slidef-iframe" frameborder="0" src="${shareLink}" title="${this.metadata.title || this.metadata.name}" allowfullscreen="true" style="border: 0px; background: padding-box padding-box rgba(0, 0, 0, 0.1); margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" data-ratio="1.7777777777777777"></iframe>`;
+    const embedCode = `<iframe class="slidef-iframe" frameborder="0" src="${shareLink}" title="${
+      this.metadata.title || this.metadata.name
+    }" allowfullscreen="true" style="border: 0px; background: padding-box padding-box rgba(0, 0, 0, 0.1); margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" data-ratio="1.7777777777777777"></iframe>`;
     this.shareEmbedInput.value = embedCode;
   }
 
   closeShareModal() {
-    this.shareModal.classList.add('hidden');
+    this.shareModal.classList.add("hidden");
   }
 
   openOverviewModal() {
     // Clear existing grid
-    this.overviewGrid.innerHTML = '';
+    this.overviewGrid.innerHTML = "";
 
     // Generate grid items for all slides
     for (let i = 1; i <= this.totalSlides; i++) {
-      const slideItem = document.createElement('div');
-      slideItem.className = 'overview-slide';
+      const slideItem = document.createElement("div");
+      slideItem.className = "overview-slide";
       if (i === this.currentSlide) {
-        slideItem.classList.add('active');
+        slideItem.classList.add("active");
       }
 
-      const slideImg = document.createElement('img');
-      slideImg.className = 'overview-slide-image';
+      const slideImg = document.createElement("img");
+      slideImg.className = "overview-slide-image";
       slideImg.src = this.slideImages[i - 1];
       slideImg.alt = `Slide ${i}`;
-      slideImg.loading = 'lazy';
+      slideImg.loading = "lazy";
 
-      const slideNumber = document.createElement('div');
-      slideNumber.className = 'overview-slide-number';
+      const slideNumber = document.createElement("div");
+      slideNumber.className = "overview-slide-number";
       slideNumber.textContent = i;
 
       slideItem.appendChild(slideImg);
       slideItem.appendChild(slideNumber);
 
       // Click to navigate
-      slideItem.addEventListener('click', () => {
+      slideItem.addEventListener("click", () => {
         this.goToSlide(i);
         this.closeOverviewModal();
       });
@@ -578,11 +622,11 @@ class SlidefViewer {
     }
 
     // Show modal
-    this.overviewModal.classList.remove('hidden');
+    this.overviewModal.classList.remove("hidden");
   }
 
   closeOverviewModal() {
-    this.overviewModal.classList.add('hidden');
+    this.overviewModal.classList.add("hidden");
   }
 
   async copyToClipboard(text, successMessage) {
@@ -596,15 +640,15 @@ class SlidefViewer {
         button.textContent = originalText;
       }, 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
-      alert('Failed to copy to clipboard');
+      console.error("Failed to copy:", err);
+      alert("Failed to copy to clipboard");
     }
   }
 }
 
 // Initialize viewer when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => new SlidefViewer());
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => new SlidefViewer());
 } else {
   new SlidefViewer();
 }

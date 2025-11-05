@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import express from 'express';
 import multer from 'multer';
+import chokidar from 'chokidar';
 import { convertPdfToImages } from '../utils/pdf.js';
 import { loadSlides, saveSlideIndex } from '../utils/file.js';
 
@@ -201,6 +202,73 @@ export async function devCommand(options: DevOptions) {
     app.get('/viewer.html', async (req, res) => {
       const html = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
       res.send(html);
+    });
+
+    // SSE endpoint for live reload
+    const clients: express.Response[] = [];
+
+    app.get('/api/live-reload', (req, res) => {
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+
+      // Send initial connection message
+      res.write('data: {"type":"connected"}\n\n');
+
+      // Add client to list
+      clients.push(res);
+
+      // Remove client on disconnect
+      req.on('close', () => {
+        const index = clients.indexOf(res);
+        if (index !== -1) {
+          clients.splice(index, 1);
+        }
+      });
+    });
+
+    // Function to notify all clients
+    const notifyClients = (event: string, data: any = {}) => {
+      const message = `data: ${JSON.stringify({ type: event, ...data })}\n\n`;
+      clients.forEach((client) => {
+        try {
+          client.write(message);
+        } catch (error) {
+          // Client disconnected, will be removed on 'close' event
+        }
+      });
+    };
+
+    // Setup file watcher
+    const watcher = chokidar.watch([slidesDir, viewerDir, path.join(cwd, 'slidef.config.json')], {
+      ignored: /(^|[\/\\])\../, // ignore dotfiles
+      persistent: true,
+      ignoreInitial: true,
+      awaitWriteFinish: {
+        stabilityThreshold: 100,
+        pollInterval: 100,
+      },
+    });
+
+    watcher
+      .on('add', (filepath) => {
+        console.log(chalk.gray(`  File added: ${path.relative(cwd, filepath)}`));
+        notifyClients('reload', { reason: 'file-added', file: path.relative(cwd, filepath) });
+      })
+      .on('change', (filepath) => {
+        console.log(chalk.gray(`  File changed: ${path.relative(cwd, filepath)}`));
+        notifyClients('reload', { reason: 'file-changed', file: path.relative(cwd, filepath) });
+      })
+      .on('unlink', (filepath) => {
+        console.log(chalk.gray(`  File removed: ${path.relative(cwd, filepath)}`));
+        notifyClients('reload', { reason: 'file-removed', file: path.relative(cwd, filepath) });
+      });
+
+    // Cleanup on process exit
+    process.on('SIGINT', () => {
+      console.log(chalk.yellow('\n\nShutting down...'));
+      watcher.close();
+      process.exit(0);
     });
 
     // Start server

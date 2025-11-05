@@ -60,6 +60,4 @@ export interface SlidefConfig {
   publishDir?: string;
   /** Slides directory */
   slidesDir?: string;
-  /** Created timestamp */
-  createdAt?: string;
 }

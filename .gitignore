@@ -9,3 +9,6 @@ dist/
 
 # Package manager
 pnpm-lock.yaml
+
+# Test files
+*.pdf
