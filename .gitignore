@@ -9,6 +9,3 @@ dist/
 
 # Package manager
 pnpm-lock.yaml
-
-slides/
-test/
