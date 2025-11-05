@@ -92,10 +92,10 @@ export async function devCommand(options: DevOptions) {
     });
     const upload = multer({ storage });
 
-    // Serve viewer files from viewer package (always use latest in dev mode)
-    const viewerDir = path.join(__dirname, '../../../viewer/src');
-    app.use('/css', express.static(path.join(viewerDir, 'css')));
-    app.use('/js', express.static(path.join(viewerDir, 'js')));
+    // Serve viewer files from templates directory
+    const templatesDir = path.join(__dirname, '../templates');
+    app.use('/css', express.static(path.join(templatesDir, 'css')));
+    app.use('/js', express.static(path.join(templatesDir, 'js')));
 
     // Serve slides directory directly (not from public)
     app.use('/slides', express.static(slidesDir));
@@ -222,7 +222,7 @@ export async function devCommand(options: DevOptions) {
 
     // Serve index page
     app.get('/', async (req, res) => {
-      const indexHtml = await fs.readFile(path.join(viewerDir, 'index.html'), 'utf-8');
+      const indexHtml = await fs.readFile(path.join(templatesDir, 'index.html'), 'utf-8');
       const slides = await loadSlides(slidesDir);
       const slidesIndex = JSON.stringify({ slides });
 
@@ -252,7 +252,7 @@ export async function devCommand(options: DevOptions) {
 
     // Serve viewer page with old URL for backwards compatibility
     app.get('/viewer.html', async (req, res) => {
-      let html = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
+      let html = await fs.readFile(path.join(templatesDir, 'viewer.html'), 'utf-8');
 
       // Inject theme customization
       if (config.theme) {
@@ -280,7 +280,7 @@ export async function devCommand(options: DevOptions) {
       const slideDir = path.join(slidesDir, slideName);
       try {
         await fs.access(slideDir);
-        let html = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
+        let html = await fs.readFile(path.join(templatesDir, 'viewer.html'), 'utf-8');
 
         // Inject theme customization
         if (config.theme) {
@@ -331,7 +331,7 @@ export async function devCommand(options: DevOptions) {
     };
 
     // Setup file watcher
-    const watcher = chokidar.watch([slidesDir, viewerDir, path.join(cwd, 'slidef.config.json')], {
+    const watcher = chokidar.watch([slidesDir, templatesDir, path.join(cwd, 'slidef.config.json')], {
       ignored: /(^|[\/\\])\../, // ignore dotfiles
       persistent: true,
       ignoreInitial: true,

@@ -84,12 +84,12 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
 
     spinner.text = 'Copying viewer files...';
 
-    // Copy viewer files from viewer package
-    const viewerDir = path.join(__dirname, '../../../viewer/src');
+    // Copy viewer files from templates directory
+    const templatesDir = path.join(__dirname, '../templates');
 
     // Copy and customize HTML files
-    let indexHtml = await fs.readFile(path.join(viewerDir, 'index.html'), 'utf-8');
-    let viewerHtml = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
+    let indexHtml = await fs.readFile(path.join(templatesDir, 'index.html'), 'utf-8');
+    let viewerHtml = await fs.readFile(path.join(templatesDir, 'viewer.html'), 'utf-8');
 
     // Apply theme customization
     if (config.theme) {
@@ -105,12 +105,12 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
     // Copy CSS directory
     const cssOutputDir = path.join(outputDir, 'css');
     await fs.mkdir(cssOutputDir, { recursive: true });
-    await copyDirectory(path.join(viewerDir, 'css'), cssOutputDir);
+    await copyDirectory(path.join(templatesDir, 'css'), cssOutputDir);
 
     // Copy JS directory
     const jsOutputDir = path.join(outputDir, 'js');
     await fs.mkdir(jsOutputDir, { recursive: true });
-    await copyDirectory(path.join(viewerDir, 'js'), jsOutputDir);
+    await copyDirectory(path.join(templatesDir, 'js'), jsOutputDir);
 
     spinner.text = 'Copying slides...';
 

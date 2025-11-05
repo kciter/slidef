@@ -3,306 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slide Viewer</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background-color: #1a1a1a;
-      color: white;
-      overflow: hidden;
-      height: 100vh;
-    }
-
-    .viewer-container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    .header {
-      background-color: #2a2a2a;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #3a3a3a;
-    }
-
-    .header h1 {
-      font-size: 1.2rem;
-      font-weight: 500;
-    }
-
-    .header a {
-      color: #0066cc;
-      text-decoration: none;
-    }
-
-    .header a:hover {
-      text-decoration: underline;
-    }
-
-    .slide-container {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      position: relative;
-    }
-
-    .slide-image {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-    }
-
-    .controls {
-      background-color: #2a2a2a;
-      padding: 1rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      border-top: 1px solid #3a3a3a;
-    }
-
-    .btn {
-      background-color: #3a3a3a;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.2s;
-    }
-
-    .btn:hover:not(:disabled) {
-      background-color: #4a4a4a;
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .page-info {
-      font-size: 1rem;
-      color: #aaa;
-      min-width: 100px;
-      text-align: center;
-    }
-
-    .navigation-hint {
-      position: absolute;
-      bottom: 6rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(42, 42, 42, 0.9);
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      color: #aaa;
-      animation: fadeOut 3s forwards;
-    }
-
-    @keyframes fadeOut {
-      0%, 70% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-    .loading {
-      text-align: center;
-      padding: 2rem;
-      color: #aaa;
-    }
-
-    .error {
-      text-align: center;
-      padding: 2rem;
-      color: #ff6b6b;
-    }
-
-    /* Navigation arrows */
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: rgba(42, 42, 42, 0.8);
-      color: white;
-      border: none;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.2s, opacity 0.2s;
-      opacity: 0.5;
-    }
-
-    .arrow:hover:not(:disabled) {
-      opacity: 1;
-      background-color: rgba(42, 42, 42, 0.95);
-    }
-
-    .arrow:disabled {
-      opacity: 0.2;
-      cursor: not-allowed;
-    }
-
-    .arrow.prev {
-      left: 2rem;
-    }
-
-    .arrow.next {
-      right: 2rem;
-    }
-  </style>
+  <title>Slidef Viewer</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/viewer.css">
 </head>
 <body>
-  <div class="viewer-container">
-    <div class="header">
-      <h1 id="slide-title">Loading...</h1>
-      <a href="./index.html">← Back to list</a>
+  <!-- Close button - top right -->
+  <div id="close-container" class="close-container">
+    <button id="close-button" class="icon-button" aria-label="Close viewer">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Menu - bottom right -->
+  <div id="menu-container" class="menu-container">
+    <button id="scroll-mode-toggle" class="icon-button" aria-label="Toggle scroll mode">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path class="slide-mode-icon hidden" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 1v10h10V5H5z"/>
+        <path class="scroll-mode-icon" d="M3 3h14v3H3V3zm0 5h14v3H3V8zm0 5h14v3H3v-3z"/>
+      </svg>
+    </button>
+    <button id="overview-button" class="icon-button" aria-label="Slide overview">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M3 3h6v6H3V3zm0 8h6v6H3v-6zm8-8h6v6h-6V3zm0 8h6v6h-6v-6z"/>
+      </svg>
+    </button>
+    <button id="share-button" class="icon-button" aria-label="Share">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
+      </svg>
+    </button>
+    <button id="fullscreen-toggle" class="icon-button" aria-label="Toggle fullscreen">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path class="fullscreen-enter-icon" d="M3 3h5v2H5v3H3V3zm9 0h5v5h-2V5h-3V3zM3 12h2v3h3v2H3v-5zm9 5h5v-5h-2v3h-3v2z"/>
+        <path class="fullscreen-exit-icon hidden" d="M8 3v5H3V6h3V3h2zm4 0h2v3h3v2h-5V3zM3 12h5v5H6v-3H3v-2zm9 5v-5h5v2h-3v3h-2z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Slide container -->
+  <main id="slide-container" class="slide-container">
+    <div id="slides-wrapper" class="slides-wrapper">
+      <img id="slide-prev" class="slide-image slide-prev" alt="Previous slide" />
+      <img id="slide-current" class="slide-image slide-current" alt="Current slide" />
+      <img id="slide-next" class="slide-image slide-next" alt="Next slide" />
     </div>
 
-    <div class="slide-container" id="slide-container">
-      <button class="arrow prev" id="prev-btn" disabled>‹</button>
-      <div class="loading">Loading slide...</div>
-      <button class="arrow next" id="next-btn" disabled>›</button>
-      <div class="navigation-hint">Use arrow keys or click to navigate</div>
+    <!-- Clickable navigation areas -->
+    <div id="nav-area-prev" class="nav-area nav-area-prev" aria-label="Previous slide"></div>
+    <div id="nav-area-next" class="nav-area nav-area-next" aria-label="Next slide"></div>
+  </main>
+
+  <!-- Scroll container (hidden by default) -->
+  <div id="scroll-container" class="scroll-container hidden">
+    <!-- All slides will be dynamically inserted here in scroll mode -->
+  </div>
+
+  <!-- Progress bar - bottom of screen -->
+  <div id="progress-container" class="progress-container">
+    <div id="progress-bar" class="progress-bar">
+      <div id="progress-fill" class="progress-fill"></div>
     </div>
 
-    <div class="controls">
-      <button class="btn" id="first-btn" disabled>First</button>
-      <button class="btn" id="prev-btn-bottom" disabled>Previous</button>
-      <span class="page-info" id="page-info">- / -</span>
-      <button class="btn" id="next-btn-bottom" disabled>Next</button>
-      <button class="btn" id="last-btn" disabled>Last</button>
+    <!-- Thumbnail preview (shown on progress bar hover) -->
+    <div id="thumbnail-preview" class="thumbnail-preview hidden">
+      <img id="thumbnail-image" class="thumbnail-image" alt="Preview" />
+      <div id="thumbnail-number" class="thumbnail-number"></div>
     </div>
   </div>
 
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const slideName = urlParams.get('slide');
+  <!-- Overview Modal -->
+  <div id="overview-modal" class="overview-modal hidden">
+    <div class="overview-modal-header">
+      <h2>Slide Overview</h2>
+      <button id="overview-modal-close" class="modal-close-button" aria-label="Close modal">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="overview-modal-content">
+      <div id="overview-grid" class="overview-grid">
+        <!-- Slide thumbnails will be dynamically inserted here -->
+      </div>
+    </div>
+  </div>
 
-    let currentPage = 1;
-    let totalPages = 0;
-    let metadata = null;
+  <!-- Share Modal -->
+  <div id="share-modal" class="share-modal hidden">
+    <div class="share-modal-content">
+      <div class="share-modal-header">
+        <h2>Share Presentation</h2>
+        <button id="share-modal-close" class="modal-close-button" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="share-modal-body">
+        <div class="share-option">
+          <h3>View Mode</h3>
+          <p>Choose how viewers will see your presentation</p>
+          <div class="share-mode-options">
+            <label class="share-mode-option">
+              <input type="radio" name="share-mode" value="slide" checked />
+              <span>Slide Mode</span>
+            </label>
+            <label class="share-mode-option">
+              <input type="radio" name="share-mode" value="scroll" />
+              <span>Scroll Mode</span>
+            </label>
+          </div>
+        </div>
+        <div class="share-option">
+          <h3>Direct Link</h3>
+          <p>Share this link to let others view your presentation</p>
+          <div class="share-input-group">
+            <input type="text" id="share-link-input" readonly class="share-input" />
+            <button id="copy-link-button" class="copy-button">Copy</button>
+          </div>
+        </div>
+        <div class="share-option">
+          <h3>Embed Code</h3>
+          <p>Embed this presentation in your website</p>
+          <div class="share-input-group">
+            <textarea id="share-embed-input" readonly class="share-textarea"></textarea>
+            <button id="copy-embed-button" class="copy-button">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    const slideContainer = document.getElementById('slide-container');
-    const slideTitle = document.getElementById('slide-title');
-    const pageInfo = document.getElementById('page-info');
-
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const prevBtnBottom = document.getElementById('prev-btn-bottom');
-    const nextBtnBottom = document.getElementById('next-btn-bottom');
-    const firstBtn = document.getElementById('first-btn');
-    const lastBtn = document.getElementById('last-btn');
-
-    async function loadMetadata() {
-      if (!slideName) {
-        showError('No slide specified');
-        return false;
-      }
-
-      try {
-        const response = await fetch(`./slides/${slideName}/metadata.json`);
-        if (!response.ok) throw new Error('Metadata not found');
-
-        metadata = await response.json();
-        totalPages = metadata.pageCount;
-        slideTitle.textContent = metadata.title || metadata.name;
-
-        return true;
-      } catch (error) {
-        showError('Failed to load slide metadata');
-        return false;
-      }
-    }
-
-    function showSlide(page) {
-      const paddedPage = String(page).padStart(3, '0');
-      const imagePath = `./slides/${slideName}/images/slide-${paddedPage}.png`;
-
-      slideContainer.innerHTML = `
-        <button class="arrow prev" id="prev-btn" ${page === 1 ? 'disabled' : ''}>‹</button>
-        <img src="${imagePath}" alt="Slide ${page}" class="slide-image" onerror="handleImageError()">
-        <button class="arrow next" id="next-btn" ${page === totalPages ? 'disabled' : ''}>›</button>
-      `;
-
-      // Re-attach event listeners
-      document.getElementById('prev-btn').addEventListener('click', () => goToPage(currentPage - 1));
-      document.getElementById('next-btn').addEventListener('click', () => goToPage(currentPage + 1));
-
-      updateControls();
-    }
-
-    function updateControls() {
-      pageInfo.textContent = `${currentPage} / ${totalPages}`;
-
-      prevBtn.disabled = currentPage === 1;
-      prevBtnBottom.disabled = currentPage === 1;
-      firstBtn.disabled = currentPage === 1;
-
-      nextBtn.disabled = currentPage === totalPages;
-      nextBtnBottom.disabled = currentPage === totalPages;
-      lastBtn.disabled = currentPage === totalPages;
-    }
-
-    function goToPage(page) {
-      if (page < 1 || page > totalPages) return;
-      currentPage = page;
-      showSlide(currentPage);
-    }
-
-    function showError(message) {
-      slideContainer.innerHTML = `<div class="error">${message}</div>`;
-    }
-
-    window.handleImageError = function() {
-      showError('Failed to load slide image');
-    };
-
-    // Event listeners
-    prevBtnBottom.addEventListener('click', () => goToPage(currentPage - 1));
-    nextBtnBottom.addEventListener('click', () => goToPage(currentPage + 1));
-    firstBtn.addEventListener('click', () => goToPage(1));
-    lastBtn.addEventListener('click', () => goToPage(totalPages));
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        goToPage(currentPage - 1);
-      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
-        e.preventDefault();
-        goToPage(currentPage + 1);
-      } else if (e.key === 'Home') {
-        goToPage(1);
-      } else if (e.key === 'End') {
-        goToPage(totalPages);
-      }
-    });
-
-    // Initialize
-    (async () => {
-      const loaded = await loadMetadata();
-      if (loaded) {
-        showSlide(currentPage);
-      }
-    })();
-  </script>
+  <script src="js/viewer.js"></script>
 </body>
 </html>
