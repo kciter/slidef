@@ -332,6 +332,17 @@ class SlideIndex {
     this.currentEditingSlide = slide;
     document.getElementById("edit-title").value = slide.title || slide.name;
     document.getElementById("edit-description").value = slide.description || "";
+
+    // Format createdAt to datetime-local format (YYYY-MM-DDTHH:mm)
+    const createdDate = new Date(slide.createdAt);
+    const year = createdDate.getFullYear();
+    const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+    const day = String(createdDate.getDate()).padStart(2, '0');
+    const hours = String(createdDate.getHours()).padStart(2, '0');
+    const minutes = String(createdDate.getMinutes()).padStart(2, '0');
+    const datetimeLocal = `${year}-${month}-${day}T${hours}:${minutes}`;
+    document.getElementById("edit-created-at").value = datetimeLocal;
+
     this.editModal.classList.remove("hidden");
   }
 
@@ -344,9 +355,15 @@ class SlideIndex {
     if (!this.currentEditingSlide) return;
 
     const formData = new FormData(this.editForm);
+
+    // Convert datetime-local to ISO string
+    const createdAtLocal = formData.get("createdAt");
+    const createdAtISO = new Date(createdAtLocal).toISOString();
+
     const updates = {
       title: formData.get("title"),
       description: formData.get("description"),
+      createdAt: createdAtISO,
     };
 
     try {
