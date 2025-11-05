@@ -162,12 +162,15 @@ export async function devCommand(options: DevOptions) {
         const pageCount = await convertPdfToImages(pdfPath, relativeImagesDir, scale);
 
         // Save metadata
+        const today = new Date();
+        const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+
         const metadata = {
           name: slideName,
           filename: req.file.originalname,
           title: req.body.title || baseName,
           pageCount,
-          createdAt: new Date().toISOString(),
+          createdAt: dateStr,
           sha256: pdfHash,
         };
 

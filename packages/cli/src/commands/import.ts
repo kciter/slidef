@@ -68,11 +68,14 @@ export async function importCommand(
     spinner.text = 'Saving metadata...';
 
     // Create metadata
+    const today = new Date();
+    const dateStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+
     const metadata: SlideMetadata = {
       name: slideName,
       filename: path.basename(pdfFile),
       pageCount,
-      createdAt: new Date().toISOString(),
+      createdAt: dateStr,
       sha256: pdfHash,
     };
 

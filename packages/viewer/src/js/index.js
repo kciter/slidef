@@ -333,13 +333,8 @@ class SlideIndex {
     document.getElementById("edit-title").value = slide.title || slide.name;
     document.getElementById("edit-description").value = slide.description || "";
 
-    // Format createdAt to date format (YYYY-MM-DD)
-    const createdDate = new Date(slide.createdAt);
-    const year = createdDate.getFullYear();
-    const month = String(createdDate.getMonth() + 1).padStart(2, '0');
-    const day = String(createdDate.getDate()).padStart(2, '0');
-    const dateLocal = `${year}-${month}-${day}`;
-    document.getElementById("edit-created-at").value = dateLocal;
+    // createdAt is already in YYYY-MM-DD format
+    document.getElementById("edit-created-at").value = slide.createdAt;
 
     this.editModal.classList.remove("hidden");
   }
@@ -354,14 +349,11 @@ class SlideIndex {
 
     const formData = new FormData(this.editForm);
 
-    // Convert date to ISO string at midnight (00:00:00)
-    const dateStr = formData.get("createdAt");
-    const createdAtISO = new Date(dateStr + 'T00:00:00').toISOString();
-
+    // Use date string directly (YYYY-MM-DD format)
     const updates = {
       title: formData.get("title"),
       description: formData.get("description"),
-      createdAt: createdAtISO,
+      createdAt: formData.get("createdAt"),
     };
 
     try {

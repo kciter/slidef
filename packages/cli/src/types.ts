@@ -8,7 +8,7 @@ export interface SlideMetadata {
   filename: string;
   /** Total number of pages/slides */
   pageCount: number;
-  /** Timestamp when converted */
+  /** Date when converted (YYYY-MM-DD format) */
   createdAt: string;
   /** SHA256 hash of the PDF file */
   sha256: string;
