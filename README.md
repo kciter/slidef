@@ -1,7 +1,5 @@
 # Slidef
 
-> Convert PDF slides to a beautiful web-viewable format - like Speaker Deck, but self-hosted
-
 Slidef is a CLI tool that converts your PDF presentations into a modern, web-based slide viewer. Perfect for sharing presentations, creating slide archives, or building your own slide hosting platform.
 
 ## Features
@@ -193,18 +191,6 @@ Each slide deck has a `metadata.json` file with the following structure:
 
 You can edit `title`, `description`, and `createdAt` through the web UI in dev mode.
 
-## Keyboard Shortcuts
-
-When viewing slides:
-
-- `→` or `Space` - Next slide
-- `←` - Previous slide
-- `Home` - First slide
-- `End` - Last slide
-- `F` - Toggle fullscreen
-- `Esc` - Exit fullscreen
-- `?` - Show/hide help
-
 ## Deployment
 
 ### GitHub Pages
@@ -224,52 +210,6 @@ When viewing slides:
    ```
 
 2. Deploy the `public/` directory using Netlify or Vercel.
-
-### Custom Server
-
-The published output is a static site - deploy it anywhere that serves static files!
-
-## Development
-
-### Project Structure
-
-```
-slidef/
-├── packages/
-│   ├── cli/          # CLI tool and server
-│   │   ├── src/
-│   │   │   ├── commands/   # CLI commands
-│   │   │   ├── utils/      # Utilities
-│   │   │   └── types.ts    # TypeScript types
-│   │   └── package.json
-│   ├── viewer/       # Web viewer UI
-│   │   ├── src/
-│   │   │   ├── css/        # Stylesheets
-│   │   │   ├── js/         # JavaScript
-│   │   │   ├── index.html  # Slide list page
-│   │   │   └── viewer.html # Slide viewer page
-│   │   └── package.json
-│   └── playground/   # Testing workspace
-└── package.json
-```
-
-### Building from Source
-
-```bash
-# Clone the repository
-git clone https://github.com/kciter/slidef.git
-cd slidef
-
-# Install dependencies
-pnpm install
-
-# Build the CLI
-pnpm -F @slidef/cli build
-
-# Link for local development
-cd packages/cli
-npm link
-```
 
 ## License
 
