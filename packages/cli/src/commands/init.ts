@@ -36,6 +36,7 @@ export async function initCommand(options: InitOptions) {
       theme: {
         primaryColor: '#007bff',
         progressColor: '#A020F0',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
       },
     };
 
