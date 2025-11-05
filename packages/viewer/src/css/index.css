@@ -292,6 +292,7 @@ body {
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group input[type="file"],
+.form-group input[type="date"],
 .form-group textarea {
   width: 100%;
   padding: 0.75rem;
@@ -301,6 +302,43 @@ body {
   color: var(--text-primary);
   font-size: 1rem;
   transition: border-color var(--transition-fast);
+}
+
+/* Date input styling */
+.form-group input[type="date"] {
+  position: relative;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.form-group input[type="date"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.form-group input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.form-group input[type="date"]::-webkit-datetime-edit-text {
+  color: var(--text-secondary);
+  padding: 0 0.25rem;
+}
+
+.form-group input[type="date"]::-webkit-datetime-edit-month-field,
+.form-group input[type="date"]::-webkit-datetime-edit-day-field,
+.form-group input[type="date"]::-webkit-datetime-edit-year-field {
+  color: var(--text-primary);
+  padding: 0 0.25rem;
 }
 
 .form-group textarea {
