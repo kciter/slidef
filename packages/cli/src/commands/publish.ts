@@ -13,8 +13,27 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
   const spinner = ora('Publishing slides...').start();
 
   try {
-    const slidesDir = path.resolve(options.slides);
-    const outputDir = path.resolve(options.output);
+    const cwd = process.cwd();
+
+    // Load config
+    let config: any = {
+      publishDir: 'public',
+      slidesDir: 'slides',
+    };
+
+    try {
+      const configPath = path.join(cwd, 'slidef.config.json');
+      const configData = await fs.readFile(configPath, 'utf-8');
+      config = { ...config, ...JSON.parse(configData) };
+    } catch {
+      // Config doesn't exist, use defaults
+    }
+
+    const slidesDir = path.resolve(options.slides || config.slidesDir || 'slides');
+    const outputDir = path.resolve(options.output || config.publishDir || 'public');
+
+    // Ensure output directory exists
+    await fs.mkdir(outputDir, { recursive: true });
 
     spinner.text = 'Scanning slides directory...';
 

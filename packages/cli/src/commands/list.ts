@@ -4,7 +4,22 @@ import chalk from 'chalk';
 import type { SlideMetadata } from '../types.js';
 
 export async function listCommand(): Promise<void> {
-  const slidesDir = path.resolve('slides');
+  const cwd = process.cwd();
+
+  // Load config
+  let config: any = {
+    slidesDir: 'slides',
+  };
+
+  try {
+    const configPath = path.join(cwd, 'slidef.config.json');
+    const configData = await fs.readFile(configPath, 'utf-8');
+    config = { ...config, ...JSON.parse(configData) };
+  } catch {
+    // Config doesn't exist, use defaults
+  }
+
+  const slidesDir = path.resolve(config.slidesDir || 'slides');
 
   try {
     // Check if slides directory exists

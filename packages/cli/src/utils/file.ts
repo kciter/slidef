@@ -51,6 +51,13 @@ export async function getAllSlides(slidesDir: string): Promise<SlideMetadata[]> 
 }
 
 /**
+ * Load all slides from the slides directory (alias for getAllSlides)
+ */
+export async function loadSlides(slidesDir: string): Promise<SlideMetadata[]> {
+  return getAllSlides(slidesDir);
+}
+
+/**
  * Save slide index
  */
 export async function saveSlideIndex(

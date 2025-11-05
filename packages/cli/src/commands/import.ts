@@ -1,3 +1,4 @@
+import * as fs from 'fs/promises';
 import * as path from 'path';
 import chalk from 'chalk';
 import ora from 'ora';
@@ -12,6 +13,21 @@ export async function importCommand(
   const spinner = ora('Importing PDF slides...').start();
 
   try {
+    const cwd = process.cwd();
+
+    // Load config
+    let config: any = {
+      slidesDir: 'slides',
+    };
+
+    try {
+      const configPath = path.join(cwd, 'slidef.config.json');
+      const configData = await fs.readFile(configPath, 'utf-8');
+      config = { ...config, ...JSON.parse(configData) };
+    } catch {
+      // Config doesn't exist, use defaults
+    }
+
     // Check if PDF file exists
     const pdfPath = path.resolve(pdfFile);
     if (!(await fileExists(pdfPath))) {
@@ -25,7 +41,8 @@ export async function importCommand(
 
     // Determine slide name
     const slideName = options.name || getBaseName(pdfFile);
-    const outputDir = path.resolve('slides', slideName);
+    const slidesDir = path.resolve(config.slidesDir || 'slides');
+    const outputDir = path.join(slidesDir, slideName);
     const imagesDir = path.join(outputDir, 'images');
 
     // Check if slide already exists with same hash

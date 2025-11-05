@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+import { initCommand } from './commands/init.js';
+import { devCommand } from './commands/dev.js';
 import { importCommand } from './commands/import.js';
 import { publishCommand } from './commands/publish.js';
 import { listCommand } from './commands/list.js';
@@ -14,6 +16,20 @@ program
   .version('0.0.1');
 
 program
+  .command('init')
+  .description('Initialize a new Slidef project')
+  .option('-t, --title <title>', 'Project title', 'Slide Presentations')
+  .option('-s, --subtitle <subtitle>', 'Project subtitle', 'View and manage your slide decks')
+  .action(initCommand);
+
+program
+  .command('dev')
+  .description('Start development server with web UI')
+  .option('-p, --port <number>', 'Port number', '3000')
+  .option('-s, --slides <dir>', 'Slides directory', 'slides')
+  .action(devCommand);
+
+program
   .command('import')
   .description('Import PDF file as slide deck')
   .argument('<pdf-file>', 'PDF file path to import')
@@ -24,8 +40,8 @@ program
 program
   .command('publish')
   .description('Generate static site for all slides')
-  .option('-o, --output <dir>', 'Output directory', '.')
-  .option('-s, --slides <dir>', 'Slides directory', 'slides')
+  .option('-o, --output <dir>', 'Output directory (defaults to config.publishDir or "public")')
+  .option('-s, --slides <dir>', 'Slides directory (defaults to config.slidesDir or "slides")')
   .action(publishCommand);
 
 program

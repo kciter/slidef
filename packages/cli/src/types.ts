@@ -47,3 +47,19 @@ export interface SlideIndex {
   /** Last updated timestamp */
   updatedAt: string;
 }
+
+/**
+ * Slidef project configuration
+ */
+export interface SlidefConfig {
+  /** Project title */
+  title?: string;
+  /** Project subtitle */
+  subtitle?: string;
+  /** Output directory for publish command */
+  publishDir?: string;
+  /** Slides directory */
+  slidesDir?: string;
+  /** Created timestamp */
+  createdAt?: string;
+}
