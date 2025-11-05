@@ -1,0 +1,14 @@
+{
+  "slides": [
+    {
+      "name": "test",
+      "filename": "test.pdf",
+      "pageCount": 46,
+      "createdAt": "2024-03-01T14:38:00.000Z",
+      "sha256": "89283c0029d4b2bc09ef85d9057a98b32e62082d6f89c676106a267f5fe071ce",
+      "title": "test",
+      "description": ""
+    }
+  ],
+  "updatedAt": "2025-11-05T15:06:00.055Z"
+}

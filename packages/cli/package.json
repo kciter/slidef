@@ -12,7 +12,7 @@
     "templates"
   ],
   "scripts": {
-    "build": "tsc && chmod +x dist/index.js && cp -r src/templates dist/templates",
+    "build": "tsc && chmod +x dist/index.js && rm -rf dist/templates && cp -r src/templates dist/",
     "dev": "tsc --watch",
     "clean": "rm -rf dist"
   },
