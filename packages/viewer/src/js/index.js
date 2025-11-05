@@ -333,15 +333,13 @@ class SlideIndex {
     document.getElementById("edit-title").value = slide.title || slide.name;
     document.getElementById("edit-description").value = slide.description || "";
 
-    // Format createdAt to datetime-local format (YYYY-MM-DDTHH:mm)
+    // Format createdAt to date format (YYYY-MM-DD)
     const createdDate = new Date(slide.createdAt);
     const year = createdDate.getFullYear();
     const month = String(createdDate.getMonth() + 1).padStart(2, '0');
     const day = String(createdDate.getDate()).padStart(2, '0');
-    const hours = String(createdDate.getHours()).padStart(2, '0');
-    const minutes = String(createdDate.getMinutes()).padStart(2, '0');
-    const datetimeLocal = `${year}-${month}-${day}T${hours}:${minutes}`;
-    document.getElementById("edit-created-at").value = datetimeLocal;
+    const dateLocal = `${year}-${month}-${day}`;
+    document.getElementById("edit-created-at").value = dateLocal;
 
     this.editModal.classList.remove("hidden");
   }
@@ -356,9 +354,9 @@ class SlideIndex {
 
     const formData = new FormData(this.editForm);
 
-    // Convert datetime-local to ISO string
-    const createdAtLocal = formData.get("createdAt");
-    const createdAtISO = new Date(createdAtLocal).toISOString();
+    // Convert date to ISO string at midnight (00:00:00)
+    const dateStr = formData.get("createdAt");
+    const createdAtISO = new Date(dateStr + 'T00:00:00').toISOString();
 
     const updates = {
       title: formData.get("title"),
