@@ -9,6 +9,37 @@ import type { PublishOptions } from '../types.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Generate CSS for theme customization
+ */
+function generateThemeStyles(theme: any): string {
+  const styles: string[] = [':root {'];
+
+  if (theme.primaryColor) {
+    styles.push(`  --primary-color: ${theme.primaryColor};`);
+  }
+  if (theme.backgroundColor) {
+    styles.push(`  --bg-primary: ${theme.backgroundColor};`);
+  }
+  if (theme.textColor) {
+    styles.push(`  --text-primary: ${theme.textColor};`);
+  }
+  if (theme.progressColor) {
+    styles.push(`  --progress-fill: ${theme.progressColor};`);
+  }
+  if (theme.fontFamily) {
+    styles.push(`  --font-family: ${theme.fontFamily};`);
+  }
+
+  styles.push('}');
+
+  if (theme.fontFamily) {
+    styles.push(`body { font-family: ${theme.fontFamily}; }`);
+  }
+
+  return styles.join('\n');
+}
+
 export async function publishCommand(options: PublishOptions): Promise<void> {
   const spinner = ora('Publishing slides...').start();
 
@@ -95,6 +126,17 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
           await copyDirectory(srcDir, destDir);
         }
       }
+    }
+
+    spinner.text = 'Creating slide routes...';
+
+    // Create directory for each slide with index.html (for clean URLs without .html)
+    const viewerHtml = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
+    for (const slide of slides) {
+      const slideRouteDir = path.join(outputDir, slide.name);
+      await fs.mkdir(slideRouteDir, { recursive: true });
+      const slideHtmlPath = path.join(slideRouteDir, 'index.html');
+      await fs.writeFile(slideHtmlPath, viewerHtml, 'utf-8');
     }
 
     spinner.succeed(chalk.green(`Successfully published ${chalk.cyan(slides.length)} slide(s)`));

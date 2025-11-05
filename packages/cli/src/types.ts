@@ -49,6 +49,22 @@ export interface SlideIndex {
 }
 
 /**
+ * Theme customization options
+ */
+export interface ThemeConfig {
+  /** Primary color (e.g., #007bff) */
+  primaryColor?: string;
+  /** Background color (e.g., #ffffff) */
+  backgroundColor?: string;
+  /** Text color (e.g., #1a1a1a) */
+  textColor?: string;
+  /** Progress bar color (e.g., #A020F0) */
+  progressColor?: string;
+  /** Font family (e.g., 'Arial, sans-serif') */
+  fontFamily?: string;
+}
+
+/**
  * Slidef project configuration
  */
 export interface SlidefConfig {
@@ -60,4 +76,6 @@ export interface SlidefConfig {
   publishDir?: string;
   /** Slides directory */
   slidesDir?: string;
+  /** Theme customization */
+  theme?: ThemeConfig;
 }

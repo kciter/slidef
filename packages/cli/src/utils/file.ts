@@ -101,3 +101,40 @@ export async function calculateFileHash(filePath: string): Promise<string> {
   hashSum.update(fileBuffer);
   return hashSum.digest('hex');
 }
+
+/**
+ * Normalize filename to be filesystem-safe
+ * - Converts to lowercase
+ * - Replaces spaces with hyphens
+ * - Normalizes Unicode characters (NFD -> NFC)
+ * - Removes special characters except alphanumeric, hyphen, and underscore
+ */
+export function normalizeFilename(name: string): string {
+  return name
+    .normalize('NFC') // Unicode normalization
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/[^\w\-가-힣ぁ-んァ-ヶ一-龯]/g, '') // Keep alphanumeric, hyphen, and CJK characters
+    .replace(/\-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^\-+|\-+$/g, ''); // Remove leading/trailing hyphens
+}
+
+/**
+ * Generate a unique slide name by appending count if name exists
+ */
+export async function generateUniqueSlideName(
+  slidesDir: string,
+  baseName: string
+): Promise<string> {
+  const normalized = normalizeFilename(baseName);
+  let slideName = normalized;
+  let count = 1;
+
+  // Check if directory exists
+  while (await fileExists(path.join(slidesDir, slideName))) {
+    slideName = `${normalized}-${count}`;
+    count++;
+  }
+
+  return slideName;
+}

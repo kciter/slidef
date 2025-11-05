@@ -7,7 +7,7 @@ import express from 'express';
 import multer from 'multer';
 import chokidar from 'chokidar';
 import { convertPdfToImages } from '../utils/pdf.js';
-import { loadSlides, saveSlideIndex } from '../utils/file.js';
+import { loadSlides, saveSlideIndex, calculateFileHash, generateUniqueSlideName } from '../utils/file.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +15,37 @@ const __dirname = path.dirname(__filename);
 interface DevOptions {
   port?: number;
   slides?: string;
+}
+
+/**
+ * Generate CSS for theme customization
+ */
+function generateThemeStyles(theme: any): string {
+  const styles: string[] = [':root {'];
+
+  if (theme.primaryColor) {
+    styles.push(`  --primary-color: ${theme.primaryColor};`);
+  }
+  if (theme.backgroundColor) {
+    styles.push(`  --bg-primary: ${theme.backgroundColor};`);
+  }
+  if (theme.textColor) {
+    styles.push(`  --text-primary: ${theme.textColor};`);
+  }
+  if (theme.progressColor) {
+    styles.push(`  --progress-fill: ${theme.progressColor};`);
+  }
+  if (theme.fontFamily) {
+    styles.push(`  --font-family: ${theme.fontFamily};`);
+  }
+
+  styles.push('}');
+
+  if (theme.fontFamily) {
+    styles.push(`body { font-family: ${theme.fontFamily}; }`);
+  }
+
+  return styles.join('\n');
 }
 
 export async function devCommand(options: DevOptions) {
@@ -111,21 +142,33 @@ export async function devCommand(options: DevOptions) {
         }
 
         const pdfPath = req.file.path;
-        const slideName = req.body.name || path.basename(req.file.originalname, '.pdf');
+
+        // Calculate PDF hash
+        const pdfHash = await calculateFileHash(pdfPath);
+
+        const baseName = req.body.name || path.basename(req.file.originalname, '.pdf');
+
+        // Generate unique normalized slide name
+        const slideName = await generateUniqueSlideName(slidesDir, baseName);
         const scale = parseFloat(req.body.scale || '2');
 
         // Convert PDF to images
         const slideDir = path.join(slidesDir, slideName);
-        await fs.mkdir(path.join(slideDir, 'images'), { recursive: true });
+        const imagesDir = path.join(slideDir, 'images');
+        await fs.mkdir(imagesDir, { recursive: true });
 
-        const pageCount = await convertPdfToImages(pdfPath, path.join(slideDir, 'images'), scale);
+        // Use relative path for PDF conversion
+        const relativeImagesDir = path.relative(process.cwd(), imagesDir);
+        const pageCount = await convertPdfToImages(pdfPath, relativeImagesDir, scale);
 
         // Save metadata
         const metadata = {
           name: slideName,
-          title: req.body.title || slideName,
+          filename: req.file.originalname,
+          title: req.body.title || baseName,
           pageCount,
           createdAt: new Date().toISOString(),
+          sha256: pdfHash,
         };
 
         await fs.writeFile(
@@ -181,7 +224,7 @@ export async function devCommand(options: DevOptions) {
       const slidesIndex = JSON.stringify({ slides });
 
       // Inject config and slides data
-      const html = indexHtml
+      let html = indexHtml
         .replace(
           '<h1 class="page-title">📚 Slide Presentations</h1>',
           `<h1 class="page-title">📚 ${config.title}</h1>`
@@ -195,13 +238,58 @@ export async function devCommand(options: DevOptions) {
           `<script>window.__SLIDES_DATA__ = ${slidesIndex};</script></body>`
         );
 
+      // Inject theme customization
+      if (config.theme) {
+        const themeStyles = generateThemeStyles(config.theme);
+        html = html.replace('</head>', `<style>${themeStyles}</style></head>`);
+      }
+
       res.send(html);
     });
 
-    // Serve viewer page
+    // Serve viewer page with old URL for backwards compatibility
     app.get('/viewer.html', async (req, res) => {
-      const html = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
+      let html = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
+
+      // Inject theme customization
+      if (config.theme) {
+        const themeStyles = generateThemeStyles(config.theme);
+        html = html.replace('</head>', `<style>${themeStyles}</style></head>`);
+      }
+
       res.send(html);
+    });
+
+    // Serve viewer page by slide name (e.g., /my-presentation)
+    app.get('/:slideName', async (req, res, next) => {
+      const slideName = req.params.slideName;
+
+      // Skip if it's an API route or static file
+      if (slideName.startsWith('api') ||
+          slideName.startsWith('css') ||
+          slideName.startsWith('js') ||
+          slideName.startsWith('slides') ||
+          slideName.includes('.')) {
+        return next();
+      }
+
+      // Check if slide exists
+      const slideDir = path.join(slidesDir, slideName);
+      try {
+        await fs.access(slideDir);
+        let html = await fs.readFile(path.join(viewerDir, 'viewer.html'), 'utf-8');
+
+        // Inject theme customization
+        if (config.theme) {
+          const themeStyles = generateThemeStyles(config.theme);
+          html = html.replace('</head>', `<style>${themeStyles}</style></head>`);
+        }
+
+        res.send(html);
+      } catch {
+        // Slide doesn't exist, continue to next handler
+        next();
+      }
     });
 
     // SSE endpoint for live reload

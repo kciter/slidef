@@ -11,6 +11,9 @@ class SlideIndex {
     this.importForm = document.getElementById("import-form");
     this.importProgress = document.getElementById("import-progress");
     this.progressMessage = document.getElementById("progress-message");
+    this.editModal = document.getElementById("edit-modal");
+    this.editForm = document.getElementById("edit-form");
+    this.currentEditingSlide = null;
     this.isDevMode = false;
 
     this.init();
@@ -79,6 +82,25 @@ class SlideIndex {
       this.handleImport();
     });
 
+    // Edit modal events
+    document
+      .getElementById("close-edit-modal")
+      .addEventListener("click", () => this.closeEditModal());
+    document
+      .getElementById("cancel-edit")
+      .addEventListener("click", () => this.closeEditModal());
+
+    this.editModal.addEventListener("click", (e) => {
+      if (e.target === this.editModal) {
+        this.closeEditModal();
+      }
+    });
+
+    this.editForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.handleEditSubmit();
+    });
+
     // Auto-fill slide name from PDF filename
     document.getElementById("pdf-file").addEventListener("change", (e) => {
       const file = e.target.files[0];
@@ -143,7 +165,8 @@ class SlideIndex {
 
     const card = document.createElement("a");
     card.className = "slide-card";
-    card.href = `viewer.html?slide=${slide.name}&from=list`;
+    // Use clean URLs for both dev and static modes
+    card.href = `${slide.name}?from=list`;
 
     const thumbnail = document.createElement("img");
     thumbnail.className = "slide-thumbnail";
@@ -306,22 +329,40 @@ class SlideIndex {
   }
 
   async handleEditSlide(slide) {
-    const newTitle = prompt("Enter new title:", slide.title || slide.name);
-    if (newTitle === null) return; // Cancelled
+    this.currentEditingSlide = slide;
+    document.getElementById("edit-title").value = slide.title || slide.name;
+    document.getElementById("edit-description").value = slide.description || "";
+    this.editModal.classList.remove("hidden");
+  }
+
+  closeEditModal() {
+    this.editModal.classList.add("hidden");
+    this.currentEditingSlide = null;
+  }
+
+  async handleEditSubmit() {
+    if (!this.currentEditingSlide) return;
+
+    const formData = new FormData(this.editForm);
+    const updates = {
+      title: formData.get("title"),
+      description: formData.get("description"),
+    };
 
     try {
-      const response = await fetch(`/api/slides/${slide.name}`, {
+      const response = await fetch(`/api/slides/${this.currentEditingSlide.name}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title: newTitle }),
+        body: JSON.stringify(updates),
       });
 
       if (!response.ok) {
         throw new Error("Failed to update slide");
       }
 
+      this.closeEditModal();
       // Reload slides
       this.reloadSlides();
     } catch (error) {

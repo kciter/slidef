@@ -1,6 +1,7 @@
 /* CSS Variables */
 :root {
   /* Colors */
+  --primary-color: #007bff;
   --bg-primary: #ffffff;
   --bg-secondary: #f5f5f5;
   --text-primary: #1a1a1a;

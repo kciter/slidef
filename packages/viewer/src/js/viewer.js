@@ -7,7 +7,11 @@ class SlidefViewer {
   constructor() {
     // Get slide info from URL
     const params = new URLSearchParams(window.location.search);
-    this.slideName = params.get("slide") || "";
+    // Support both /slide-name and viewer.html?slide=slide-name formats
+    const pathParts = window.location.pathname.split('/').filter(p => p);
+    this.slideName = pathParts[pathParts.length - 1] === 'viewer.html'
+      ? params.get("slide") || ""
+      : pathParts[pathParts.length - 1] || params.get("slide") || "";
     this.currentSlide = parseInt(params.get("page") || "1", 10);
 
     // State

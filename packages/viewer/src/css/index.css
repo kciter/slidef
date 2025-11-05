@@ -9,6 +9,11 @@ body {
   margin: 0 auto;
 }
 
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
 /* Header */
 .page-header {
   display: flex;
@@ -182,6 +187,7 @@ body {
   gap: 0.5rem;
   opacity: 0;
   transition: opacity var(--transition-fast);
+  z-index: 10;
 }
 
 .slide-card:hover .slide-actions {
@@ -198,8 +204,9 @@ body {
   border: none;
   cursor: pointer;
   transition: transform var(--transition-fast), background var(--transition-fast);
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   color: white;
+  backdrop-filter: blur(4px);
 }
 
 .slide-action-btn:hover {
@@ -284,7 +291,8 @@ body {
 
 .form-group input[type="text"],
 .form-group input[type="number"],
-.form-group input[type="file"] {
+.form-group input[type="file"],
+.form-group textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border-color);
@@ -295,7 +303,13 @@ body {
   transition: border-color var(--transition-fast);
 }
 
-.form-group input:focus {
+.form-group textarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: var(--primary-color);
 }

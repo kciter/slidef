@@ -3,7 +3,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 import ora from 'ora';
 import { convertPdfToImages } from '../utils/pdf.js';
-import { saveMetadata, fileExists, getBaseName, calculateFileHash, loadMetadata } from '../utils/file.js';
+import { saveMetadata, fileExists, getBaseName, calculateFileHash, loadMetadata, generateUniqueSlideName } from '../utils/file.js';
 import type { ConvertOptions, SlideMetadata } from '../types.js';
 
 export async function importCommand(
@@ -39,22 +39,17 @@ export async function importCommand(
     spinner.text = 'Calculating file hash...';
     const pdfHash = await calculateFileHash(pdfPath);
 
-    // Determine slide name
-    const slideName = options.name || getBaseName(pdfFile);
+    // Determine slide name with normalization and unique name generation
+    const baseName = options.name || getBaseName(pdfFile);
     const slidesDir = path.resolve(config.slidesDir || 'slides');
+
+    // Ensure slides directory exists
+    await fs.mkdir(slidesDir, { recursive: true });
+
+    // Generate unique normalized slide name
+    const slideName = await generateUniqueSlideName(slidesDir, baseName);
     const outputDir = path.join(slidesDir, slideName);
     const imagesDir = path.join(outputDir, 'images');
-
-    // Check if slide already exists with same hash
-    if (await fileExists(outputDir)) {
-      const existingMetadata = await loadMetadata(outputDir);
-      if (existingMetadata && existingMetadata.sha256 === pdfHash) {
-        spinner.info(chalk.yellow(`Slide deck "${slideName}" already exists with the same content`));
-        console.log(chalk.gray('Skipping import (file hash matches existing slide)'));
-        console.log(chalk.gray(`Hash: ${pdfHash.substring(0, 16)}...`));
-        return;
-      }
-    }
 
     spinner.text = `Converting ${chalk.cyan(pdfFile)} to images...`;
 

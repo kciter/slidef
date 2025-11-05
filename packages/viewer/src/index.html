@@ -73,6 +73,30 @@
     </div>
   </div>
 
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit Slide</h2>
+        <button id="close-edit-modal" class="close-btn">&times;</button>
+      </div>
+      <form id="edit-form" class="import-form">
+        <div class="form-group">
+          <label for="edit-title">Title</label>
+          <input type="text" id="edit-title" name="title" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-description">Description (optional)</label>
+          <textarea id="edit-description" name="description" rows="3" placeholder="Add a description for this slide deck"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="cancel-edit" class="btn-secondary">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="js/index.js"></script>
 </body>
 </html>
