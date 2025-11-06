@@ -6,6 +6,7 @@ import ora from "ora";
 interface InitOptions {
   title?: string;
   subtitle?: string;
+  baseUrl?: string;
 }
 
 export async function initCommand(options: InitOptions) {
@@ -33,6 +34,7 @@ export async function initCommand(options: InitOptions) {
     const config = {
       title: options.title || "Slide Presentations",
       subtitle: options.subtitle || "View and manage your slide decks",
+      baseUrl: options.baseUrl || "/",
       publishDir: "public",
       slidesDir: "slides",
       theme: {

@@ -38,6 +38,11 @@ program
     "Project subtitle",
     "View and manage your slide decks"
   )
+  .option(
+    "-b, --base-url <url>",
+    "Base URL for asset paths (e.g., '/' or '/talks/')",
+    "/"
+  )
   .action(initCommand);
 
 program

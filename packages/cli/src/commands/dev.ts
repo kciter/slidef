@@ -64,6 +64,7 @@ export async function devCommand(options: DevOptions) {
     let config: any = {
       title: "Slide Presentations",
       subtitle: "View and manage your slide decks",
+      baseUrl: "/",
       publishDir: "public",
       slidesDir: "slides",
     };

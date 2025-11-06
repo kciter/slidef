@@ -40,6 +40,20 @@ function generateThemeStyles(theme: any): string {
   return styles.join("\n");
 }
 
+/**
+ * Apply baseUrl to all asset paths in HTML
+ */
+function applyBaseUrl(html: string, baseUrl: string): string {
+  // Ensure baseUrl ends with / if it's not just "/"
+  const base = baseUrl === "/" ? "" : baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+
+  // Replace asset paths
+  return html
+    .replace(/href="\/css\//g, `href="${base}/css/`)
+    .replace(/src="\/js\//g, `src="${base}/js/`)
+    .replace(/src="\/slides\//g, `src="${base}/slides/`);
+}
+
 export async function publishCommand(options: PublishOptions): Promise<void> {
   const spinner = ora("Publishing slides...").start();
 
@@ -48,6 +62,7 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
 
     // Load config
     let config: any = {
+      baseUrl: "/",
       publishDir: "public",
       slidesDir: "slides",
     };
@@ -127,6 +142,11 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
       indexHtml = indexHtml.replace("</head>", styleTag);
       viewerHtml = viewerHtml.replace("</head>", styleTag);
     }
+
+    // Apply baseUrl to asset paths
+    const baseUrl = config.baseUrl || "/";
+    indexHtml = applyBaseUrl(indexHtml, baseUrl);
+    viewerHtml = applyBaseUrl(viewerHtml, baseUrl);
 
     await fs.writeFile(path.join(outputDir, "index.html"), indexHtml, "utf-8");
     await fs.writeFile(
