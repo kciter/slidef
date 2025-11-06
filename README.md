@@ -4,10 +4,12 @@ Slidef is a CLI tool that converts your PDF presentations into a modern, web-bas
 
 ## Features
 
-- **PDF to Images**: Automatically converts PDF slides to high-quality PNG images
+- **PDF to Images**: Automatically converts PDF slides to high-quality images (WebP, PNG, or JPEG)
+- **Optimized File Size**: WebP format by default for 60% smaller files while maintaining quality
 - **Web Viewer**: Beautiful, responsive slide viewer with keyboard navigation
 - **Dev Server**: Live development server with hot reload
 - **Static Export**: Generate static sites for easy deployment (GitHub Pages, Netlify, etc.)
+- **Subdirectory Deployment**: Support for deploying to subdirectories with baseUrl configuration
 - **Slide Management**: Edit slide metadata, titles, descriptions, and dates via web UI
 - **Theme Customization**: Customize colors and fonts to match your brand
 
@@ -66,8 +68,8 @@ Your slides will be converted and saved to:
 slides/
 └── presentation/
     ├── images/
-    │   ├── slide-001.png
-    │   ├── slide-002.png
+    │   ├── slide-001.webp
+    │   ├── slide-002.webp
     │   └── ...
     └── metadata.json
 ```
@@ -110,10 +112,19 @@ Import and convert a PDF file to slides.
 **Options:**
 - `--name <name>` - Custom name for the slide deck (default: PDF filename)
 - `--scale <number>` - Image resolution scale factor (default: 2)
+- `--format <format>` - Image format: png, jpeg, or webp (default: webp)
+- `--quality <number>` - Image quality for lossy formats (0-100, default: 85)
 
-**Example:**
+**Examples:**
 ```bash
-slidef import talk.pdf --name "my-conference-talk" --scale 3
+# WebP with default quality (recommended)
+slidef import talk.pdf --name "my-conference-talk"
+
+# PNG for maximum quality
+slidef import talk.pdf --format png
+
+# JPEG with custom quality
+slidef import talk.pdf --format jpeg --quality 90
 ```
 
 ### `slidef dev`
