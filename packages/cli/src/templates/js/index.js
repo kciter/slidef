@@ -170,7 +170,7 @@ class SlideIndex {
 
     const thumbnail = document.createElement("img");
     thumbnail.className = "slide-thumbnail";
-    const format = slide.format || "png"; // Default to png for backward compatibility
+    const format = slide.format || "webp";
     thumbnail.src = `slides/${slide.name}/images/slide-001.${format}`;
     thumbnail.alt = `${slide.title || slide.name} thumbnail`;
     thumbnail.loading = "lazy";

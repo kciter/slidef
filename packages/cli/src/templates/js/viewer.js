@@ -92,7 +92,7 @@ class SlidefViewer {
     this.totalSlides = this.metadata.pageCount;
 
     // Generate image paths
-    const format = this.metadata.format || "png"; // Default to png for backward compatibility
+    const format = this.metadata.format || "webp";
     this.slideImages = Array.from({ length: this.totalSlides }, (_, i) => {
       const pageNum = String(i + 1).padStart(3, "0");
       return `slides/${this.slideName}/images/slide-${pageNum}.${format}`;
