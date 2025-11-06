@@ -58,6 +58,12 @@ program
   .argument("<pdf-file>", "PDF file path to import")
   .option("-n, --name <name>", "Slide name (defaults to PDF filename)")
   .option("-s, --scale <number>", "Scale factor for image resolution", "2")
+  .option(
+    "-f, --format <format>",
+    "Image format: png, jpeg, or webp",
+    "webp"
+  )
+  .option("-q, --quality <number>", "Image quality (0-100)", "85")
   .action(importCommand);
 
 program

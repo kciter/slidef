@@ -24,6 +24,10 @@ export interface ConvertOptions {
   name?: string;
   /** Scale factor for image resolution (default: 2) */
   scale?: number;
+  /** Image format: png, jpeg, or webp (default: webp) */
+  format?: "png" | "jpeg" | "webp";
+  /** Image quality for lossy formats (0-100, default: 85) */
+  quality?: number;
 }
 
 /**

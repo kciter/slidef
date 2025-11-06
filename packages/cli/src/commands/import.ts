@@ -67,14 +67,28 @@ export async function importCommand(
       process.exit(1);
     }
 
+    // Parse format option
+    const format = (options.format as any) || "webp";
+    if (!["png", "jpeg", "webp"].includes(format)) {
+      spinner.fail(chalk.red("Format must be png, jpeg, or webp"));
+      process.exit(1);
+    }
+
+    // Parse quality option
+    const quality = options.quality ? parseInt(options.quality as any) : 85;
+    if (isNaN(quality) || quality < 0 || quality > 100) {
+      spinner.fail(chalk.red("Quality must be between 0 and 100"));
+      process.exit(1);
+    }
+
     // Convert PDF to images
     // Pass relative path to work around pdf-to-png-converter path handling
     const relativeImagesDir = path.relative(process.cwd(), imagesDir);
-    const pageCount = await convertPdfToImages(
-      pdfPath,
-      relativeImagesDir,
-      scale
-    );
+    const pageCount = await convertPdfToImages(pdfPath, relativeImagesDir, {
+      scale,
+      format: format as any,
+      quality,
+    });
 
     spinner.text = "Saving metadata...";
 
@@ -100,11 +114,12 @@ export async function importCommand(
       )
     );
 
+    const ext = format === "jpeg" ? "jpg" : format;
     console.log(chalk.gray("\nOutput structure:"));
     console.log(chalk.gray(`  ${outputDir}/`));
     console.log(chalk.gray(`  ├── images/`));
-    console.log(chalk.gray(`  │   ├── slide-001.png`));
-    console.log(chalk.gray(`  │   ├── slide-002.png`));
+    console.log(chalk.gray(`  │   ├── slide-001.${ext}`));
+    console.log(chalk.gray(`  │   ├── slide-002.${ext}`));
     console.log(chalk.gray(`  │   └── ...`));
     console.log(chalk.gray(`  └── metadata.json`));
   } catch (error) {

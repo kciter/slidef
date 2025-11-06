@@ -160,6 +160,8 @@ export async function devCommand(options: DevOptions) {
         // Generate unique normalized slide name
         const slideName = await generateUniqueSlideName(slidesDir, baseName);
         const scale = parseFloat(req.body.scale || "2");
+        const format = req.body.format || "webp";
+        const quality = parseInt(req.body.quality || "85");
 
         // Convert PDF to images
         const slideDir = path.join(slidesDir, slideName);
@@ -168,11 +170,11 @@ export async function devCommand(options: DevOptions) {
 
         // Use relative path for PDF conversion
         const relativeImagesDir = path.relative(process.cwd(), imagesDir);
-        const pageCount = await convertPdfToImages(
-          pdfPath,
-          relativeImagesDir,
-          scale
-        );
+        const pageCount = await convertPdfToImages(pdfPath, relativeImagesDir, {
+          scale,
+          format: format as any,
+          quality,
+        });
 
         // Save metadata
         // Use provided date or default to today

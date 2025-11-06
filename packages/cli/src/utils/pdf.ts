@@ -28,14 +28,23 @@ class NodeCanvasFactory {
   }
 }
 
+export type ImageFormat = "png" | "jpeg" | "webp";
+
+export interface ConvertOptions {
+  scale?: number;
+  format?: ImageFormat;
+  quality?: number;
+}
+
 /**
  * Convert entire PDF to images using pdf.js directly
  */
 export async function convertPdfToImages(
   pdfPath: string,
   outputDir: string,
-  scale: number = 2
+  options: ConvertOptions = {}
 ): Promise<number> {
+  const { scale = 2, format = "webp", quality = 85 } = options;
   // Dynamically import pdf.js
   const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
 
@@ -85,11 +94,23 @@ export async function convertPdfToImages(
       canvas: canvas,
     } as any).promise;
 
+    // Determine file extension and buffer format
+    const ext = format === "jpeg" ? "jpg" : format;
     const outputPath = path.join(
       outputDir,
-      `slide-${String(i).padStart(3, "0")}.png`
+      `slide-${String(i).padStart(3, "0")}.${ext}`
     );
-    const buffer = canvas.toBuffer("image/png");
+
+    // Generate buffer based on format
+    let buffer: Buffer;
+    if (format === "webp") {
+      buffer = canvas.toBuffer("image/webp", quality);
+    } else if (format === "jpeg") {
+      buffer = canvas.toBuffer("image/jpeg", quality);
+    } else {
+      buffer = canvas.toBuffer("image/png");
+    }
+
     await fs.writeFile(outputPath, buffer);
 
     page.cleanup();
