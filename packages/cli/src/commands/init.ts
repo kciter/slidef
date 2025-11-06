@@ -1,7 +1,7 @@
-import fs from 'fs/promises';
-import path from 'path';
-import chalk from 'chalk';
-import ora from 'ora';
+import fs from "fs/promises";
+import path from "path";
+import chalk from "chalk";
+import ora from "ora";
 
 interface InitOptions {
   title?: string;
@@ -9,16 +9,18 @@ interface InitOptions {
 }
 
 export async function initCommand(options: InitOptions) {
-  const spinner = ora('Initializing Slidef project...').start();
+  const spinner = ora("Initializing Slidef project...").start();
 
   try {
     const cwd = process.cwd();
 
     // Check if already initialized
-    const slidesDir = path.join(cwd, 'slides');
+    const slidesDir = path.join(cwd, "slides");
     try {
       await fs.access(slidesDir);
-      spinner.warn(chalk.yellow('Slidef project already exists in this directory'));
+      spinner.warn(
+        chalk.yellow("Slidef project already exists in this directory")
+      );
       return;
     } catch {
       // Directory doesn't exist, continue
@@ -29,21 +31,21 @@ export async function initCommand(options: InitOptions) {
 
     // Create config file
     const config = {
-      title: options.title || 'Slide Presentations',
-      subtitle: options.subtitle || 'View and manage your slide decks',
-      publishDir: 'public',
-      slidesDir: 'slides',
+      title: options.title || "Slide Presentations",
+      subtitle: options.subtitle || "View and manage your slide decks",
+      publishDir: "public",
+      slidesDir: "slides",
       theme: {
-        primaryColor: '#007bff',
-        progressColor: '#A020F0',
-        fontFamily: 'system-ui, -apple-system, sans-serif',
+        primaryColor: "#007bff",
+        progressColor: "#A020F0",
+        fontFamily: "system-ui, -apple-system, sans-serif",
       },
     };
 
     await fs.writeFile(
-      path.join(cwd, 'slidef.config.json'),
+      path.join(cwd, "slidef.config.json"),
       JSON.stringify(config, null, 2),
-      'utf-8'
+      "utf-8"
     );
 
     // Create .gitignore
@@ -52,22 +54,30 @@ node_modules/
 *.log
 .DS_Store
 `;
-    await fs.writeFile(path.join(cwd, '.gitignore'), gitignore, 'utf-8');
+    await fs.writeFile(path.join(cwd, ".gitignore"), gitignore, "utf-8");
 
-    spinner.succeed(chalk.green('Slidef project initialized!'));
+    spinner.succeed(chalk.green("Slidef project initialized!"));
 
-    console.log(chalk.gray('\nProject structure:'));
-    console.log(chalk.gray('  ./'));
-    console.log(chalk.gray('  ├── slidef.config.json'));
-    console.log(chalk.gray('  ├── slides/'));
-    console.log(chalk.gray('  └── .gitignore'));
+    console.log(chalk.gray("\nProject structure:"));
+    console.log(chalk.gray("  ./"));
+    console.log(chalk.gray("  ├── slidef.config.json"));
+    console.log(chalk.gray("  ├── slides/"));
+    console.log(chalk.gray("  └── .gitignore"));
 
-    console.log(chalk.green('\n✨ Next steps:'));
-    console.log(chalk.gray(`  1. Import a PDF: ${chalk.cyan('slidef import presentation.pdf')}`));
-    console.log(chalk.gray(`  2. Start dev server: ${chalk.cyan('slidef dev')}`));
-    console.log(chalk.gray(`  3. Publish to static site: ${chalk.cyan('slidef publish')}`));
+    console.log(chalk.green("\n✨ Next steps:"));
+    console.log(
+      chalk.gray(
+        `  1. Import a PDF: ${chalk.cyan("slidef import presentation.pdf")}`
+      )
+    );
+    console.log(
+      chalk.gray(`  2. Start dev server: ${chalk.cyan("slidef dev")}`)
+    );
+    console.log(
+      chalk.gray(`  3. Publish to static site: ${chalk.cyan("slidef publish")}`)
+    );
   } catch (error) {
-    spinner.fail(chalk.red('Initialization failed'));
+    spinner.fail(chalk.red("Initialization failed"));
     console.error(error);
     process.exit(1);
   }
