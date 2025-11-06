@@ -65,8 +65,10 @@ export async function listCommand(): Promise<void> {
       if (slide.metadata) {
         console.log(chalk.cyan(`  ${slide.name}`));
         console.log(chalk.gray(`    Pages: ${slide.metadata.pageCount}`));
-        console.log(chalk.gray(`    Source: ${slide.metadata.filename}`));
         console.log(chalk.gray(`    Created: ${new Date(slide.metadata.createdAt).toLocaleString()}`));
+        if (slide.metadata.title) {
+          console.log(chalk.gray(`    Title: ${slide.metadata.title}`));
+        }
       } else {
         console.log(chalk.cyan(`  ${slide.name}`));
         console.log(chalk.gray(`    (No metadata available)`));

@@ -180,7 +180,6 @@ Each slide deck has a `metadata.json` file with the following structure:
 ```json
 {
   "name": "presentation",
-  "filename": "presentation.pdf",
   "title": "My Awesome Presentation",
   "description": "A talk about something interesting",
   "pageCount": 42,

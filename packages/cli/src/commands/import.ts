@@ -73,7 +73,6 @@ export async function importCommand(
 
     const metadata: SlideMetadata = {
       name: slideName,
-      filename: path.basename(pdfFile),
       pageCount,
       createdAt: dateStr,
       sha256: pdfHash,

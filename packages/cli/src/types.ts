@@ -4,8 +4,6 @@
 export interface SlideMetadata {
   /** Unique name/ID for the slide deck */
   name: string;
-  /** Original PDF filename */
-  filename: string;
   /** Total number of pages/slides */
   pageCount: number;
   /** Date when converted (YYYY-MM-DD format) */
