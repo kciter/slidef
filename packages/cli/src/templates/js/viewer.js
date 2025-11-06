@@ -83,7 +83,8 @@ class SlidefViewer {
   }
 
   async loadMetadata() {
-    const response = await fetch(`/slides/${this.slideName}/metadata.json`);
+    const baseUrl = window.BASE_URL || "";
+    const response = await fetch(`${baseUrl}/slides/${this.slideName}/metadata.json`);
     if (!response.ok) {
       throw new Error("Failed to load metadata");
     }
@@ -95,7 +96,7 @@ class SlidefViewer {
     const format = this.metadata.format || "webp";
     this.slideImages = Array.from({ length: this.totalSlides }, (_, i) => {
       const pageNum = String(i + 1).padStart(3, "0");
-      return `/slides/${this.slideName}/images/slide-${pageNum}.${format}`;
+      return `${baseUrl}/slides/${this.slideName}/images/slide-${pageNum}.${format}`;
     });
   }
 
@@ -106,7 +107,8 @@ class SlidefViewer {
 
     // Close button
     this.closeButton.addEventListener("click", () => {
-      window.location.href = "/";
+      const baseUrl = window.BASE_URL || "";
+      window.location.href = baseUrl ? `${baseUrl}/` : "/";
     });
 
     // Scroll mode toggle

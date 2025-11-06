@@ -145,6 +145,12 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
 
     // Apply baseUrl to asset paths
     const baseUrl = config.baseUrl || "/";
+
+    // Inject BASE_URL into HTML for JavaScript to use
+    const baseUrlScript = `<script>window.BASE_URL = "${baseUrl}";</script></head>`;
+    indexHtml = indexHtml.replace("</head>", baseUrlScript);
+    viewerHtml = viewerHtml.replace("</head>", baseUrlScript);
+
     indexHtml = applyBaseUrl(indexHtml, baseUrl);
     viewerHtml = applyBaseUrl(viewerHtml, baseUrl);
 
