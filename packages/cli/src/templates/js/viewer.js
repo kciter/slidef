@@ -83,7 +83,7 @@ class SlidefViewer {
   }
 
   async loadMetadata() {
-    const response = await fetch(`slides/${this.slideName}/metadata.json`);
+    const response = await fetch(`/slides/${this.slideName}/metadata.json`);
     if (!response.ok) {
       throw new Error("Failed to load metadata");
     }
@@ -95,7 +95,7 @@ class SlidefViewer {
     const format = this.metadata.format || "webp";
     this.slideImages = Array.from({ length: this.totalSlides }, (_, i) => {
       const pageNum = String(i + 1).padStart(3, "0");
-      return `slides/${this.slideName}/images/slide-${pageNum}.${format}`;
+      return `/slides/${this.slideName}/images/slide-${pageNum}.${format}`;
     });
   }
 
