@@ -174,8 +174,9 @@ export async function devCommand(options: DevOptions) {
         );
 
         // Save metadata
-        const today = new Date();
-        const dateStr = today.toISOString().split("T")[0]; // YYYY-MM-DD format
+        // Use provided date or default to today
+        const dateStr = req.body.createdAt ||
+          new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
 
         const metadata = {
           name: slideName,
