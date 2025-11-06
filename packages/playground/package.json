@@ -1,8 +1,7 @@
 {
   "name": "@slidef/playground",
-  "version": "0.0.1",
-  "description": "Playground for testing Slidef CLI",
   "private": true,
+  "description": "Playground for testing Slidef CLI",
   "type": "module",
   "scripts": {
     "slidef": "node ../cli/dist/index.js"

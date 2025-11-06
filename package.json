@@ -1,6 +1,5 @@
 {
   "name": "slidef",
-  "version": "0.0.1",
   "private": true,
   "description": "Slidef - PDF slides converter and viewer",
   "repository": {
