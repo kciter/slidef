@@ -167,7 +167,6 @@ export async function devCommand(options: DevOptions) {
 
         const metadata = {
           name: slideName,
-          filename: req.file.originalname,
           title: req.body.title || baseName,
           pageCount,
           createdAt: dateStr,

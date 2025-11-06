@@ -298,6 +298,9 @@ class SlideIndex {
     this.importProgress.classList.remove("hidden");
     this.progressMessage.textContent = "Importing PDF...";
 
+    // Disable live reload during import to prevent interruption
+    this.isImporting = true;
+
     try {
       const response = await fetch("/api/import", {
         method: "POST",
@@ -313,6 +316,7 @@ class SlideIndex {
 
       // Success
       this.progressMessage.textContent = "Import successful!";
+      this.isImporting = false;
 
       // Close modal after a short delay
       setTimeout(() => {
@@ -322,9 +326,25 @@ class SlideIndex {
       }, 1000);
     } catch (error) {
       console.error("Import error:", error);
-      alert(`Import failed: ${error.message}`);
-      this.importForm.classList.remove("hidden");
-      this.importProgress.classList.add("hidden");
+
+      // Check if slides were actually created despite the error
+      // (this can happen if the import succeeded but the response failed)
+      this.progressMessage.textContent = "Checking import status...";
+
+      setTimeout(async () => {
+        try {
+          const slides = await this.loadSlides();
+          // If we have more slides than before, import likely succeeded
+          this.renderSlides(slides);
+          this.closeImportModal();
+        } catch {
+          // If we still can't load, show the error
+          alert(`Import failed: ${error.message}`);
+          this.importForm.classList.remove("hidden");
+          this.importProgress.classList.add("hidden");
+        }
+        this.isImporting = false;
+      }, 1000);
     }
   }
 
@@ -357,13 +377,16 @@ class SlideIndex {
     };
 
     try {
-      const response = await fetch(`/api/slides/${this.currentEditingSlide.name}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updates),
-      });
+      const response = await fetch(
+        `/api/slides/${this.currentEditingSlide.name}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updates),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to update slide");
@@ -432,6 +455,12 @@ class SlideIndex {
         if (data.type === "connected") {
           console.log("✅ Live reload ready");
         } else if (data.type === "reload") {
+          // Skip reload if currently importing to avoid interrupting the request
+          if (this.isImporting) {
+            console.log("⏸️  Skipping reload: import in progress");
+            return;
+          }
+
           console.log(
             `🔄 Reloading: ${data.reason} (${data.file || "unknown"})`
           );
