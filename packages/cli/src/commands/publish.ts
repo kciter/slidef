@@ -105,6 +105,21 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
       "utf-8"
     );
 
+    // Apply config customization
+    indexHtml = indexHtml
+      .replace(
+        "<title>Slidef - Slide Presentations</title>",
+        `<title>Slidef - ${config.title}</title>`
+      )
+      .replace(
+        '<h1 class="page-title">📚 Slide Presentations</h1>',
+        `<h1 class="page-title">📚 ${config.title}</h1>`
+      )
+      .replace(
+        '<p class="page-subtitle">View and manage your slide decks</p>',
+        `<p class="page-subtitle">${config.subtitle}</p>`
+      );
+
     // Apply theme customization
     if (config.theme) {
       const themeStyles = generateThemeStyles(config.theme);
