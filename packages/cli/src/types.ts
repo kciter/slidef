@@ -14,6 +14,8 @@ export interface SlideMetadata {
   title?: string;
   /** Optional description */
   description?: string;
+  /** Image format used for slides (png, jpeg, webp) */
+  format?: string;
 }
 
 /**

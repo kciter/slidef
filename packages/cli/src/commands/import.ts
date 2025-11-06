@@ -96,11 +96,13 @@ export async function importCommand(
     const today = new Date();
     const dateStr = today.toISOString().split("T")[0]; // YYYY-MM-DD format
 
+    const ext = format === "jpeg" ? "jpg" : format;
     const metadata: SlideMetadata = {
       name: slideName,
       pageCount,
       createdAt: dateStr,
       sha256: pdfHash,
+      format: ext,
     };
 
     // Save metadata
@@ -114,7 +116,6 @@ export async function importCommand(
       )
     );
 
-    const ext = format === "jpeg" ? "jpg" : format;
     console.log(chalk.gray("\nOutput structure:"));
     console.log(chalk.gray(`  ${outputDir}/`));
     console.log(chalk.gray(`  ├── images/`));
