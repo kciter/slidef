@@ -205,12 +205,32 @@ You can edit `title`, `description`, and `createdAt` through the web UI in dev m
 
 ### GitHub Pages
 
+#### Option 1: Custom Domain or Root Site (username.github.io)
+
 1. Publish your slides:
    ```bash
    slidef publish --output docs
    ```
 
 2. Push to GitHub and enable GitHub Pages from the `docs` folder in repository settings.
+
+#### Option 2: Project Repository (github.io/repo-name)
+
+If your site will be deployed to a subdirectory (e.g., `https://username.github.io/my-slides/`):
+
+1. Set the baseUrl in your `slidef.config.json`:
+   ```json
+   {
+     "baseUrl": "/my-slides"
+   }
+   ```
+
+2. Publish your slides:
+   ```bash
+   slidef publish --output docs
+   ```
+
+3. Push to GitHub and enable GitHub Pages from the `docs` folder in repository settings.
 
 ### Netlify / Vercel
 
