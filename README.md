@@ -18,6 +18,10 @@
 
 Slidef is a CLI tool that converts your PDF presentations into a modern, web-based slide viewer. Perfect for sharing presentations, creating slide archives, or building your own slide hosting platform.
 
+## 🎬 Showcase
+
+- [kciter.so/talks](https://kciter.so/talks/) - Personal presentation archive
+
 ## ✨ Features
 
 - 🎯 **PDF to Images** - Automatically converts PDF slides to high-quality images (WebP, PNG, or JPEG)
