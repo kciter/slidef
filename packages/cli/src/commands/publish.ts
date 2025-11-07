@@ -124,7 +124,7 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
     indexHtml = indexHtml
       .replace(
         "<title>Slidef - Slide Presentations</title>",
-        `<title>Slidef - ${config.title}</title>`
+        `<title>${config.title}</title>`
       )
       .replace(
         '<h1 class="page-title">📚 Slide Presentations</h1>',
