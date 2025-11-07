@@ -105,6 +105,11 @@ export async function devCommand(options: DevOptions) {
     app.use("/css", express.static(path.join(templatesDir, "css")));
     app.use("/js", express.static(path.join(templatesDir, "js")));
 
+    // Serve favicon
+    app.get("/favicon.svg", async (_req, res) => {
+      res.sendFile(path.join(templatesDir, "favicon.svg"));
+    });
+
     // Serve slides directory directly (not from public)
     app.use("/slides", express.static(slidesDir));
 

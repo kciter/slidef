@@ -161,6 +161,12 @@ export async function publishCommand(options: PublishOptions): Promise<void> {
       "utf-8"
     );
 
+    // Copy favicon
+    await fs.copyFile(
+      path.join(templatesDir, "favicon.svg"),
+      path.join(outputDir, "favicon.svg")
+    );
+
     // Copy CSS directory
     const cssOutputDir = path.join(outputDir, "css");
     await fs.mkdir(cssOutputDir, { recursive: true });

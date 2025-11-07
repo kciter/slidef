@@ -1,6 +1,8 @@
 <div align="center">
 
-# 📽️ Slidef
+<img src="logo.svg" alt="Slidef Logo" width="180" height="180">
+
+# Slidef
 
 **Transform your PDF presentations into beautiful web slides**
 

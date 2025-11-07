@@ -1,0 +1,55 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A020F0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7B1FA2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="slideGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#F0F0F0;stop-opacity:0.95" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="256" cy="256" r="256" fill="url(#bgGradient)"/>
+
+  <!-- Slide stack - three layered rectangles representing slides -->
+  <!-- Back slide -->
+  <rect x="130" y="190" width="252" height="180" rx="12" fill="#FFFFFF" opacity="0.2"
+        transform="rotate(-3 256 280)"/>
+
+  <!-- Middle slide -->
+  <rect x="130" y="185" width="252" height="180" rx="12" fill="#FFFFFF" opacity="0.4"
+        transform="rotate(2 256 275)"/>
+
+  <!-- Front slide -->
+  <g filter="url(#shadow)">
+    <rect x="130" y="175" width="252" height="180" rx="12" fill="url(#slideGradient)"/>
+
+    <!-- Slide content lines -->
+    <rect x="160" y="205" width="100" height="8" rx="4" fill="#A020F0" opacity="0.6"/>
+    <rect x="160" y="225" width="192" height="6" rx="3" fill="#666666" opacity="0.3"/>
+    <rect x="160" y="240" width="192" height="6" rx="3" fill="#666666" opacity="0.3"/>
+    <rect x="160" y="255" width="150" height="6" rx="3" fill="#666666" opacity="0.3"/>
+
+    <!-- Small decorative shape (representing an image/media) -->
+    <circle cx="315" cy="310" r="25" fill="#A020F0" opacity="0.15"/>
+    <path d="M305 310 L315 300 L325 310 L320 315 L310 315 Z" fill="#A020F0" opacity="0.4"/>
+  </g>
+
+  <!-- Shadow filter -->
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="8" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+</svg>
