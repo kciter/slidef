@@ -49,6 +49,7 @@ function applyBaseUrl(html: string, baseUrl: string): string {
 
   // Replace asset paths
   return html
+    .replace(/href="\/favicon\.svg"/g, `href="${base}/favicon.svg"`)
     .replace(/href="\/css\//g, `href="${base}/css/`)
     .replace(/src="\/js\//g, `src="${base}/js/`)
     .replace(/src="\/slides\//g, `src="${base}/slides/`);
