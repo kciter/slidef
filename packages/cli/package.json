@@ -1,6 +1,6 @@
 {
   "name": "@slidef/cli",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "CLI tool for converting PDF slides to web-viewable format",
   "type": "module",
   "main": "./dist/index.js",
