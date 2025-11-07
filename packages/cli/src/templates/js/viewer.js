@@ -26,6 +26,7 @@ class SlidefViewer {
     this.slidePrev = document.getElementById("slide-prev");
     this.slideCurrent = document.getElementById("slide-current");
     this.slideNext = document.getElementById("slide-next");
+    this.slideLoading = document.getElementById("slide-loading");
     this.navAreaPrev = document.getElementById("nav-area-prev");
     this.navAreaNext = document.getElementById("nav-area-next");
     this.closeButton = document.getElementById("close-button");
@@ -49,7 +50,32 @@ class SlidefViewer {
     this.copyLinkButton = document.getElementById("copy-link-button");
     this.copyEmbedButton = document.getElementById("copy-embed-button");
 
+    // Setup image load event handlers
+    this.setupImageLoadHandlers();
+
     this.init();
+  }
+
+  setupImageLoadHandlers() {
+    [this.slidePrev, this.slideCurrent, this.slideNext].forEach((img) => {
+      img.addEventListener("load", () => {
+        img.classList.remove("loading");
+        this.checkAllImagesLoaded();
+      });
+      img.addEventListener("error", () => {
+        img.classList.remove("loading");
+        this.checkAllImagesLoaded();
+      });
+    });
+  }
+
+  checkAllImagesLoaded() {
+    const anyLoading = [this.slidePrev, this.slideCurrent, this.slideNext].some(
+      (img) => img.classList.contains("loading") && img.src
+    );
+    if (!anyLoading) {
+      this.slideLoading.style.display = "none";
+    }
   }
 
   async init() {
@@ -365,11 +391,18 @@ class SlidefViewer {
     this.slidesWrapper.style.transform = "translateX(0)";
     this.slidesWrapper.style.transition = "none";
 
+    // Show loading spinner
+    this.slideLoading.style.display = "block";
+
+    // Add loading class to images that will change
+    this.slideCurrent.classList.add("loading");
+
     // Update current slide
     this.slideCurrent.src = this.slideImages[this.currentSlide - 1];
 
     // Update previous slide
     if (this.currentSlide > 1) {
+      this.slidePrev.classList.add("loading");
       this.slidePrev.src = this.slideImages[this.currentSlide - 2];
       this.slidePrev.style.display = "block";
     } else {
@@ -378,6 +411,7 @@ class SlidefViewer {
 
     // Update next slide
     if (this.currentSlide < this.totalSlides) {
+      this.slideNext.classList.add("loading");
       this.slideNext.src = this.slideImages[this.currentSlide];
       this.slideNext.style.display = "block";
     } else {

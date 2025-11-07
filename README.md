@@ -15,17 +15,6 @@ Slidef is a CLI tool that converts your PDF presentations into a modern, web-bas
 
 ## Installation
 
-### Option 1: Quick Start with npm init (Recommended)
-
-```bash
-npm init slidef my-slides
-cd my-slides
-```
-
-This will create a new project directory, install Slidef, and initialize the project automatically.
-
-### Option 2: Global Installation
-
 ```bash
 npm install -g @slidef/cli
 # or
@@ -33,15 +22,6 @@ pnpm add -g @slidef/cli
 ```
 
 ## Quick Start
-
-### Using npm init (if not already initialized)
-
-```bash
-npm init slidef my-slides
-cd my-slides
-```
-
-### Using global installation
 
 ```bash
 mkdir my-slides
