@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo.svg" alt="Slidef Logo" width="180" height="180">
+<img src="logo.svg" alt="Slidef Logo" width="180" height="180" style="margin-bottom: 20px;" />
 
 # Slidef
 
@@ -91,8 +91,6 @@ slidef publish
 ```
 
 Your static site will be generated in the `public/` directory, ready to deploy anywhere.
-
----
 
 ## 📚 Commands
 
@@ -205,8 +203,6 @@ Each slide deck has a `metadata.json` file with the following structure:
 
 You can edit `title`, `description`, and `createdAt` through the web UI in dev mode.
 
----
-
 ## 🌍 Deployment
 
 ### GitHub Pages
@@ -246,8 +242,6 @@ If your site will be deployed to a subdirectory (e.g., `https://username.github.
    ```
 
 2. Deploy the `public/` directory using Netlify or Vercel.
-
----
 
 ## 🤝 Contributing
 
