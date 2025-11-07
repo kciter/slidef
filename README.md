@@ -1,27 +1,47 @@
-# Slidef
+<div align="center">
+
+# 📽️ Slidef
+
+**Transform your PDF presentations into beautiful web slides**
+
+[![npm version](https://img.shields.io/npm/v/@slidef/cli.svg)](https://www.npmjs.com/package/@slidef/cli)
+[![npm downloads](https://img.shields.io/npm/dm/@slidef/cli.svg)](https://www.npmjs.com/package/@slidef/cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[Installation](#installation) • [Quick Start](#quick-start) • [Features](#features) • [Documentation](#commands)
+
+</div>
+
+---
 
 Slidef is a CLI tool that converts your PDF presentations into a modern, web-based slide viewer. Perfect for sharing presentations, creating slide archives, or building your own slide hosting platform.
 
-## Features
+## ✨ Features
 
-- **PDF to Images**: Automatically converts PDF slides to high-quality images (WebP, PNG, or JPEG)
-- **Optimized File Size**: WebP format by default for 60% smaller files while maintaining quality
-- **Web Viewer**: Beautiful, responsive slide viewer with keyboard navigation
-- **Dev Server**: Live development server with hot reload
-- **Static Export**: Generate static sites for easy deployment (GitHub Pages, Netlify, etc.)
-- **Subdirectory Deployment**: Support for deploying to subdirectories with baseUrl configuration
-- **Slide Management**: Edit slide metadata, titles, descriptions, and dates via web UI
-- **Theme Customization**: Customize colors and fonts to match your brand
+- 🎯 **PDF to Images** - Automatically converts PDF slides to high-quality images (WebP, PNG, or JPEG)
+- 📦 **Optimized File Size** - WebP format by default for 60% smaller files while maintaining quality
+- 🖥️ **Web Viewer** - Beautiful, responsive slide viewer with keyboard navigation
+- 🔥 **Dev Server** - Live development server with hot reload
+- 🚀 **Static Export** - Generate static sites for easy deployment (GitHub Pages, Netlify, etc.)
+- 🌐 **Subdirectory Deployment** - Support for deploying to subdirectories with baseUrl configuration
+- ✏️ **Slide Management** - Edit slide metadata, titles, descriptions, and dates via web UI
+- 🎨 **Theme Customization** - Customize colors and fonts to match your brand
 
-## Installation
+## 📦 Installation
 
 ```bash
 npm install -g @slidef/cli
-# or
+```
+
+or using pnpm:
+
+```bash
 pnpm add -g @slidef/cli
 ```
 
-## Quick Start
+## 🚀 Quick Start
+
+### 1. Initialize a new project
 
 ```bash
 mkdir my-slides
@@ -70,7 +90,9 @@ slidef publish
 
 Your static site will be generated in the `public/` directory, ready to deploy anywhere.
 
-## Commands
+---
+
+## 📚 Commands
 
 ### `slidef init`
 
@@ -181,7 +203,9 @@ Each slide deck has a `metadata.json` file with the following structure:
 
 You can edit `title`, `description`, and `createdAt` through the web UI in dev mode.
 
-## Deployment
+---
+
+## 🌍 Deployment
 
 ### GitHub Pages
 
@@ -221,10 +245,29 @@ If your site will be deployed to a subdirectory (e.g., `https://username.github.
 
 2. Deploy the `public/` directory using Netlify or Vercel.
 
-## License
+---
 
-MIT
-
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+<div align="center">
+
+Made with ❤️ by [kciter](https://github.com/kciter)
+
+⭐ Star us on GitHub — it helps!
+
+[Report Bug](https://github.com/kciter/slidef/issues) · [Request Feature](https://github.com/kciter/slidef/issues)
+
+</div>
