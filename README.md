@@ -254,14 +254,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-<div align="center">
-
-Made with ❤️ by [kciter](https://github.com/kciter)
-
-⭐ Star us on GitHub — it helps!
-
-[Report Bug](https://github.com/kciter/slidef/issues) · [Request Feature](https://github.com/kciter/slidef/issues)
-
-</div>
