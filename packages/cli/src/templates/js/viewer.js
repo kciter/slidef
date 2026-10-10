@@ -92,10 +92,24 @@ class SlidefViewer {
         window.history.replaceState({}, "", url);
       }
 
-      // Enable scroll mode by default on mobile or if mode=scroll in URL
+      // mode=scroll / mode=slide in the URL wins. Otherwise start in scroll mode
+      // only on narrow screens that are not embedded: an embedded iframe is often
+      // narrower than 768px on a desktop page, where slide mode is expected.
       const mode = params.get("mode");
-      if (window.innerWidth <= 768 || mode === "scroll") {
+      const isEmbedded = window.self !== window.top;
+      const preferScroll =
+        mode === "scroll" ||
+        (mode !== "slide" && !isEmbedded && window.innerWidth <= 768);
+      if (preferScroll) {
         this.toggleScrollMode();
+      }
+
+      // Hide the fullscreen button only where fullscreen is not available
+      // (e.g. iPhone Safari, or an iframe without allow="fullscreen").
+      const canFullscreen =
+        document.fullscreenEnabled || document.webkitFullscreenEnabled;
+      if (!canFullscreen) {
+        this.fullscreenToggle.style.display = "none";
       }
 
       // Show close button only if coming from list page
@@ -550,7 +564,12 @@ class SlidefViewer {
     if (slideElements.length > 0 && this.currentSlide > 0) {
       const targetSlide = slideElements[this.currentSlide - 1];
       if (targetSlide) {
-        targetSlide.scrollIntoView({ behavior: "auto", block: "center" });
+        // Scroll only the slide container. scrollIntoView would also scroll
+        // the page that embeds this viewer.
+        const container = this.scrollContainer;
+        container.scrollTop =
+          targetSlide.offsetTop -
+          (container.clientHeight - targetSlide.offsetHeight) / 2;
       }
     }
   }
@@ -620,7 +639,7 @@ class SlidefViewer {
     // Generate embed code (Speaker Deck style)
     const embedCode = `<iframe class="slidef-iframe" frameborder="0" src="${shareLink}" title="${
       this.metadata.title || this.metadata.name
-    }" allowfullscreen="true" style="border: 0px; background: padding-box padding-box rgba(0, 0, 0, 0.1); margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" data-ratio="1.7777777777777777"></iframe>`;
+    }" allow="fullscreen" allowfullscreen="true" style="border: 0px; background: padding-box padding-box rgba(0, 0, 0, 0.1); margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" data-ratio="1.7777777777777777"></iframe>`;
     this.shareEmbedInput.value = embedCode;
   }
 
