@@ -1,10 +1,7 @@
 import * as fs from "fs/promises";
 import * as path from "path";
+import { createRequire } from "module";
 import { Canvas } from "@napi-rs/canvas";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 /**
  * Canvas factory for Node.js environment
@@ -51,11 +48,12 @@ export async function convertPdfToImages(
   // Ensure output directory exists
   await fs.mkdir(outputDir, { recursive: true });
 
-  // Resolve local cMap path
-  // dist/utils/pdf.js -> ../../node_modules/pdfjs-dist
-  const nodeModulesPath = path.resolve(
-    __dirname,
-    "../../node_modules/pdfjs-dist"
+  // Resolve pdfjs-dist via module resolution so cMaps are found even when
+  // the package is hoisted (npm/npx installs). Without cMaps, CJK fonts
+  // such as Adobe-Korea1 fail to load and their text is not rendered.
+  const require = createRequire(import.meta.url);
+  const nodeModulesPath = path.dirname(
+    require.resolve("pdfjs-dist/package.json")
   );
   const cMapUrl = path.join(nodeModulesPath, "cmaps") + "/";
   const standardFontDataUrl =
